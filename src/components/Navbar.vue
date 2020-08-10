@@ -47,14 +47,10 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
-  created() {
-    console.log("Navbar");
-    //this.check();
-  },
+  created() {},
   props: [],
   computed: { ...mapGetters(["navbar"]) },
   data: () => ({
-    //tf: false,
     drawer: false,
     users: [],
     links: [

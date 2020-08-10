@@ -74,8 +74,7 @@ const router = new VueRouter({
 });
 router.beforeEach(async (to, from, next) => {
   await store.dispatch("currentUser");
-  console.log("store user", store.state.user);
-  console.log(to.path);
+
   if (to.path == "/" || to.path == "/Register") store.dispatch("check", false);
   else store.dispatch("check", true);
 
