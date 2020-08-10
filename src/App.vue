@@ -1,5 +1,5 @@
 <template>
-  <v-app class="grey lighten-4">
+  <v-app class="grey lighten-4" v-resize="onResize">
     <Navbar />
     <v-content>
       <router-view></router-view>
@@ -16,5 +16,8 @@ export default {
     Navbar,
   },
   data: () => ({}),
+  methods: {
+    onResize() {},
+  },
 };
 </script>
