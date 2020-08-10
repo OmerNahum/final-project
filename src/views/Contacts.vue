@@ -177,7 +177,6 @@ export default {
       );
     },
     create() {
-      console.log("create selected", this.selected);
       this.updateContacts(this.selected);
       this.$router.push("/Add");
     },
@@ -188,7 +187,6 @@ export default {
       try {
         await this.addContact(this.contactEmail);
 
-        console.log(this.Valid);
         const message = this.Valid;
 
         if (this.Valid == "") {
@@ -198,7 +196,6 @@ export default {
         } else if (message == "Unregistered user") {
           this.valid = false;
         } else if (message == "already exist") {
-          console.log("else if exist");
           this.existValid = true;
         }
       } catch (error) {
@@ -206,20 +203,18 @@ export default {
       }
     },
     async onSaveRec() {
-      console.log("onSaveRec selection", this.selected);
       this.dialog = false;
       if (this.chooser == 2) {
         this.selected = this.recSelection;
         this.create();
       } else if (this.chooser == 1) {
-        console.log(this.recSelection);
         await this.addContact(this.recSelection);
         this.load();
       }
     },
     async deleteCon(id) {
       await this.deleteContact(id);
-      console.log(this.User);
+
       this.load();
     },
     restartValid() {
@@ -228,7 +223,6 @@ export default {
       this.setValid("");
     },
     async getRecommended() {
-      console.log(this.chooser);
       if (this.chooser == 1) {
         this.isLoading1 = true;
         await this.setRecommendedContacts();
@@ -240,7 +234,7 @@ export default {
       } else {
         this.isLoading = true;
         await this.setRecommendedGroups();
-        //console.log(this.Recommended);
+
         this.recommended = this.Recommended;
         while (!this.recommended);
         this.isLoading = false;

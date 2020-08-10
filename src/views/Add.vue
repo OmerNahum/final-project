@@ -141,7 +141,6 @@ export default {
     setParticipants() {
       const emails = this.Participants.map((p) => " " + p.email);
       this.participants = emails.toString();
-      console.log(this.participants);
     },
     onChange(e) {
       this.imageUrl = e.name;

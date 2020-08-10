@@ -100,7 +100,6 @@ export default {
     this.socket = io("http://localhost:3000");
 
     this.socket.on("change", (group) => {
-      console.log("change");
       return this.setGroups(group);
     });
 
@@ -149,28 +148,18 @@ export default {
 
       this.groups = await this.Groups;
       while (!this.groups);
-      console.log(this.groups);
+
       this.isLoading = false;
       if (this.groups.length == 0) this.isEmpty = true;
       this.searchedGroups = await this.Groups;
-      console.log("search", this.searchedGroups);
+
       this.user = this.User;
 
-      // console.log(
-      //   "let see",
-      //   this.user.lastSeen,
-      //   this.groups[this.groups.length - 1].openTime
-      // );
       this.deleteLoader = false;
       this.foreverLoader = false;
     },
-    // onGroupsChangePosition(groups) {
-    //   this.setGroups(groups);
-    //   this.load();
-    // },
-    async setGroups(group) {
-      console.log("setGroups");
 
+    async setGroups(group) {
       if (group) {
         for (let i = 0; i < this.groups.length; i++) {
           if (group.group._id.toString() === this.groups[i]._id.toString()) {
@@ -189,11 +178,8 @@ export default {
         groups.unshift(group.group);
       }
 
-      // console.log(groups);
-      // console.log(this.Groups);
-
       await this.setGroupsPosition(groups);
-      console.log(this.Groups);
+
       this.load();
     },
     searchGroup() {

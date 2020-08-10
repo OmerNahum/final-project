@@ -259,17 +259,16 @@ export default {
     async connectGroup() {
       this.user = this.User;
       this.group = this.chatGroup;
-      console.log(this.group);
+
       while (!this.group);
-      console.log("group image", this.group);
-      console.log("group image", this.group.image);
+
       this.gpImage = this.group.image;
       this.roomId = this.group._id;
       await this.createLogs(this.group._id);
       this.messages = this.Logs;
-      console.log(this.chatGroup.participants);
+
       await this.setChatPart(this.chatGroup.participants);
-      console.log(this.chatPart);
+
       this.participants = this.chatPart.map((user) => user.email);
 
       this.socket.emit(
@@ -287,7 +286,7 @@ export default {
           { group: this.chatGroup, roomId: this.roomId, _id: this.user._id },
           () => {}
         );
-        console.log("on message", messages);
+
         const message =
           messages.messages.user != " "
             ? messages.messages.user + ": " + messages.messages.message
@@ -315,7 +314,6 @@ export default {
       }
     },
     onChangeChild(value) {
-      console.log(value);
       this.group.closingTime = moment(value)
         .add(14, "hours")
         .format("LLLL");
@@ -327,7 +325,6 @@ export default {
       "setGroupNameAndClosing",
     ]),
     submit() {
-      console.log("submit", this.messages);
       this.log = this.messages.map((p) => p.user + ": " + p.message);
     },
     async deletePart(email) {
@@ -340,8 +337,7 @@ export default {
     onSave() {
       if (this.chatGroup.admin.toString() == this.user._id.toString()) {
         this.dialog = false;
-        // console.log("groupClosingTime", this.group.closingTime);
-        console.log("gpImage", this.gpImage);
+
         this.group.image = this.gpImage ? this.gpImage : this.group.image;
         this.setGroupNameAndClosing(this.group);
         this.socket.emit("onChange", { group: this.group });
@@ -359,7 +355,6 @@ export default {
         this.uploadImage(formData);
       }
       if (this.file) {
-        console.log("emiting");
         this.socket.emit(
           "sendMessage",
           { user: this.user, roomId: this.group._id, message: this.file.name },

@@ -11,7 +11,6 @@ const functions = require("../utils/dbs");
 const mongoose = require("../database");
 
 exports.loginPassport = (req, res) => {
-  console.log(req.user);
   res.status(200).send(req.user);
 };
 
@@ -105,7 +104,6 @@ exports.createGroup = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
-  console.log("Logout");
   req.logout();
   res.redirect("http://localhost:8080/");
 };
@@ -119,11 +117,6 @@ exports.getAllGroups = async (req, res) => {
 
   filteredGroups.sort((g1, g2) => {
     if (g1.messages.length > 0 && g2.messages.length > 0) {
-      console.log(
-        "g2 bigger than g1",
-        g1.messages.slice(g1.messages.length - 1)[0].sendTime <
-          g2.messages.slice(g2.messages.length - 1)[0].sendTime
-      );
       return g1.messages.slice(g1.messages.length - 1)[0].sendTime <
         g2.messages.slice(g2.messages.length - 1)[0].sendTime
         ? 1
@@ -140,7 +133,7 @@ exports.getAllGroups = async (req, res) => {
       return g1.openTime < g2.openTime ? 1 : -1;
     }
   });
-  console.log("filtered", filteredGroups);
+
   res.status(200).send(filteredGroups);
 };
 
@@ -243,10 +236,8 @@ exports.recommendedContacts = async (req, res) => {
     matchCluster = matchCluster.filter((index) => index !== userIndex);
 
     const clusterUsers = matchCluster.map((i) => allUsers[i]);
-    //console.log("allUseres", allUsers);
 
     clusterUsers.sort((user1, user2) => {
-      //console.log("user1", user1);
       return functions.func(user1.interests, req.user.interests) >=
         functions.func(user2.interests, req.user.interests)
         ? 1
@@ -280,7 +271,7 @@ exports.recommendedGroups = async (req, res) => {
   //   for (let i = 0; i < lastGroups.length; i++) {
   //     if (lastGroups[i].participants.includes(contact)) times++;
   //   }
-  //   console.log(times);
+  //
   //   return times / lastGroups.length;
   // };
   // const func = (interests1, interests2) => {
@@ -333,33 +324,26 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.addContact = async (req, res) => {
-  //console.log("req body", req.body);
   let user = null;
   let id =
     typeof req.body.payload == "string"
       ? [req.body.payload]
       : req.body.payload.map((p) => p._id);
 
-  //console.log("id[0]", id[0]);
-  console.log(id);
   if (id.length == 1) {
     if (typeof req.body.payload == "string") {
       user = await Users.findOne({ email: id[0] });
-      //console.log("user", user);
     } else {
       user = await Users.findOne({ _id: id[0] });
     }
   }
 
   if (id.length != 1 || user) {
-    console.log("user", user);
-
     if (id.length == 1) {
       if (req.user.contacts.includes(user._id)) {
-        console.log("already exist if");
         res.status(500).send({ message: "already exist" });
       }
-      //console.log("user_id", user);
+
       id = [user._id];
     }
     Users.findOneAndUpdate(
@@ -372,7 +356,6 @@ exports.addContact = async (req, res) => {
       }
     )
       .then(async (result) => {
-        console.log("then", result);
         const users = await Users.find({ _id: { $in: result.contacts } });
         return res.status(200).send(users);
       })
@@ -456,9 +439,6 @@ exports.setInterests = (req, res) => {
     });
 };
 exports.setGroupNameAndClosing = async (req, res) => {
-  //console.log(req.body);
-  //console.log(req.body.group);
-
   let group = await Group.findById(req.body.group._id);
   if (group) {
     group.name = req.body.group.name;
@@ -497,7 +477,7 @@ exports.changeProfile = async (req, res) => {
   if (hashedPassword !== req.user.password) {
     hashedPassword = await bcrypt.hash(req.body.password, 10);
   }
-  console.log("reqbody", req.body.firstName);
+
   Users.findOneAndUpdate(
     { email: req.user.email },
     {
@@ -525,11 +505,9 @@ exports.setLastSeen = async (req, res) => {
     { new: true }
   )
     .then((result) => {
-      console.log(result);
       res.status(200).send(result);
     })
     .catch(() => {
-      console.log("set last error");
       res.status(500);
     });
 };

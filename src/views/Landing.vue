@@ -95,7 +95,7 @@ export default {
       await this.setUser(data);
 
       this.user = this.User;
-      console.log(this.User);
+
       if (!this.user) {
         this.valid = false;
       } else {

@@ -79,7 +79,7 @@ io.on("connection", (socket) => {
       await room.save();
     }
     if (!chatGroup) callback("can't entered chat");
-    //console.log("join", roomId);
+
     socket.join(roomId);
     callback();
   });
@@ -93,11 +93,9 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("onChange", async (group) => {
-    console.log("onChange", group.group);
     let g = await Groups.findById(group.group._id);
-    console.log("onChange", g);
+
     if (g) {
-      //console.log("onChange", g);
       g.name = group.group.name;
       g.closingTime = group.group.closingTime;
       g.image = group.group.image;
@@ -107,15 +105,8 @@ io.on("connection", (socket) => {
 
     io.emit("change", { group: g });
   });
-  // socket.on("lastSeen", async ({ time, u }) => {
-  //   console.log("time--+-", time);
-  //   let user = await User.findById(u._id);
-  //   user.lastSeen = time;
-  //   await user.save();
-  //   io.emit("updateFinished");
-  // });
+
   socket.on("onGroupDelete", () => {
-    console.log("onGroupDelete");
     io.emit("groupDeleted");
   });
 
@@ -157,9 +148,8 @@ io.on("connection", (socket) => {
         });
       }
       room.viewed.forEach((view) => (view.isViewed = false));
-      console.log("userId", user._id);
+
       room.viewed.find((view) => {
-        console.log("viewId", view._id);
         return view._id.toString() === user._id.toString();
       }).isViewed = true;
 
@@ -168,7 +158,7 @@ io.on("connection", (socket) => {
       // let groups = await Groups.find();
       // groups = groups.filter((g) => g._id.toString() !== roomId.toString());
       // groups.unshift(room);
-      console.log("before change");
+
       io.emit("change", { group: room });
       // io.emit("changePosition", { groups: groups });
       io.to(roomId).emit("message", {
@@ -178,12 +168,5 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", () => {
-    console.log("User had left!");
-  });
+  socket.on("disconnect", () => {});
 });
-// server.listen(5000, (err) => {
-//   if (err) {
-//     console.log(err);
-//   } else console.log(`server is listening on 5000`);
-// });

@@ -66,8 +66,6 @@ export default {
         this.setInterests({ vector: this.vec, user: this.User });
         this.$router.push("/Show");
       } else {
-        console.log("regDialog");
-        console.log(this.vec);
         this.setInterests({ vector: this.vec, user: null });
         this.setRegDialog(false);
       }

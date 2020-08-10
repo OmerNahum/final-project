@@ -45,7 +45,7 @@ passport.use(
       }
 
       const contacts1 = await User.find({ email: { $in: emails } });
-      console.log("profile", profile);
+
       const newUser = await new User({
         firstName: profile.name.givenName,
         lastName: profile.name.familyName,

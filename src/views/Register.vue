@@ -147,7 +147,6 @@ export default {
         this.password != "" &&
         this.password == this.confirmPassword
       ) {
-        console.log(Interests.data().interests);
         const data = {
           firstName: this.firstName,
           lastName: this.lastName,
@@ -167,7 +166,7 @@ export default {
         }
 
         var url = `/user/addUser`;
-        console.log("before axios");
+
         axios
           .post(url, data)
           .then(() => {
@@ -184,9 +183,8 @@ export default {
     passwordCheck() {
       this.valid3 = false;
       this.valid = true;
-      console.log(this.password);
+
       if (this.password.length >= 4) {
-        console.log(this.password);
         this.addUser();
       } else {
         this.valid3 = true;
