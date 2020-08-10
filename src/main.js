@@ -38,7 +38,6 @@ export const store = new Vuex.Store({
     },
     createGroup(state, payload) {
       state.user.groups = [...state.user.groups, payload.groups];
-      console.log(state.user);
     },
     check(state, payload) {
       state.navbar = payload;
@@ -120,14 +119,13 @@ export const store = new Vuex.Store({
     async setUser(context, userData) {
       try {
         const payload = await axios.post(`/user/login`, userData);
-        console.log(payload.data);
+
         context.commit("setUser", payload.data);
       } catch (error) {
         console.log("setUser ---------------------", error);
       }
     },
     async setUserBygoogle(context) {
-      console.log("googleLogin store");
       const user = await axios.get("user/google");
       context.commit("setUser", user);
     },
@@ -136,7 +134,7 @@ export const store = new Vuex.Store({
         const payload = await axios.post("/user/createGroup", { groupData });
         context.commit("createGroup", payload);
       } catch (error) {
-        console.log("createGroup #############", error);
+        console.log("createGroup ", error);
       }
     },
     async currentUser(context) {
@@ -161,7 +159,6 @@ export const store = new Vuex.Store({
       context.commit("setGroups", payload.data);
     },
     async setGroupsPosition(context, groups) {
-      console.log(groups);
       context.commit("setGroups", groups);
     },
 
@@ -170,15 +167,13 @@ export const store = new Vuex.Store({
       context.commit("setContacts", payload.data);
     },
     async leaveGroup(context, payload) {
-      console.log("Vuex leave group");
       const user = await axios.post("/user/leaveGroup", { payload });
       context.commit("setGroups", user.data.groups);
     },
     async adminDeleteGroup(context, groupId) {
-      console.log("store groupId", groupId);
       try {
         const groups = await axios.post("/user/adminDeleteGroup", { groupId });
-        console.log(groups);
+
         context.commit("setGroups", groups.data);
       } catch (error) {
         console.log("admin delete failed");
@@ -192,14 +187,11 @@ export const store = new Vuex.Store({
       context.commit("chatPart", participants.data);
     },
     async addContact(context, payload) {
-      console.log("store onSave");
-      console.log(payload);
       try {
         const user = await axios.post("/user/addContact", { payload: payload });
-        console.log(user.data);
+
         context.commit("setContacts", user.data);
       } catch (err) {
-        console.log("AddContact error");
         console.log(err.response.data.message);
         context.commit("setErrorMessage", err.response.data.message);
       }
@@ -207,38 +199,34 @@ export const store = new Vuex.Store({
     async deleteContact(context, contactId) {
       const user = await axios.post("/user/deleteContact", { contactId });
       const contacts = await axios.get("/user/getAllUsers");
-      console.log(user);
+
       context.commit("setUser", user.data);
-      console.log(user.data.contacts);
+
       context.commit("setContacts", contacts.data);
     },
     setValid(context, payload) {
       context.commit("setErrorMessage", payload);
     },
     async getGroup(context, groupId) {
-      console.log("store getGroup", groupId);
       const group = await axios.post("/user/getGroup", { groupId });
-      console.log(group);
+
       context.commit("setChatGroup", group.data);
     },
     async createLogs(context, groupId) {
       const messages = await axios.post("/user/getMessages", { groupId });
-      console.log(messages);
+
       context.commit("setLogs", messages.data);
     },
     async deleteChatPart(context, data) {
       try {
         const payload = await axios.post("/user/deleteChatPart", data);
-        console.log(payload.data);
+
         context.commit("setChat", payload.data);
       } catch (error) {
         console.log(error);
       }
     },
     async setInterests(context, data) {
-      console.log("store", data.vector);
-      console.log("store", data.user);
-      console.log("store", data);
       if (data.user != null) {
         axios.post("/user/setInterests", { data: data.vector });
         context.commit("setInterests", data.vector);
@@ -250,7 +238,6 @@ export const store = new Vuex.Store({
       context.commit("setRegDialog", data);
     },
     async setGroupNameAndClosing(context, group) {
-      console.log("main.js", group);
       const upGroup = await axios.post("/user/setGroupNameAndClosing", {
         group,
       });
@@ -262,12 +249,10 @@ export const store = new Vuex.Store({
     },
     async setRecommendedGroups(context) {
       const recommended = await axios.get("/user/recommendedGroups");
-      console.log(recommended);
+
       context.commit("setRecommended", recommended.data);
     },
     async uploadImage(context, FormData) {
-      console.log("formData", FormData);
-
       try {
         await axios.post("/user/upload", FormData);
       } catch (error) {
@@ -279,7 +264,7 @@ export const store = new Vuex.Store({
 
       try {
         const user = await axios.post("/user/changeProfile", profileData);
-        console.log(user);
+
         context.commit("setUser", user);
       } catch (error) {
         context.commit("setErrorMessage", error);
