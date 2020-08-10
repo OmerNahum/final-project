@@ -118,8 +118,8 @@ exports.getAllGroups = async (req, res) => {
 
   filteredGroups.sort((g1, g2) => {
     if (g1.messages.length > 0 && g2.messages.length > 0) {
-      return g1.messages.slice(g1.messages.length - 2).sendTime <
-        g2.messages.slice(g2.messages.length - 2).sendTime
+      return g1.messages.slice(g1.messages.length - 1).sendTime <
+        g2.messages.slice(g2.messages.length - 1).sendTime
         ? 1
         : -1;
     } else if (g1.messages.length > 0) {

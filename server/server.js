@@ -115,8 +115,10 @@ io.on("connection", (socket) => {
   //   io.emit("updateFinished");
   // });
   socket.on("onGroupDelete", () => {
+    console.log("onGroupDelete");
     io.emit("groupDeleted");
   });
+
   socket.on("sendMessage", async ({ user, roomId, message }, callback) => {
     const room = await Groups.findById(roomId);
 

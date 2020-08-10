@@ -170,7 +170,7 @@ export default {
     // },
     async setGroups(group) {
       console.log("setGroups");
-      console.log(group.group._id.toString());
+
       if (group) {
         for (let i = 0; i < this.groups.length; i++) {
           if (group.group._id.toString() === this.groups[i]._id.toString()) {
@@ -182,13 +182,16 @@ export default {
       //this.searchedGroups = this.groups;
       await this.getAllGroups();
       let groups = await this.Groups;
-      groups = groups.filter((g) => {
-        return g._id.toString() !== group.group._id.toString();
-      });
+      if (group) {
+        groups = groups.filter((g) => {
+          return g._id.toString() !== group.group._id.toString();
+        });
+        groups.unshift(group.group);
+      }
 
-      console.log(groups);
-      console.log(this.Groups);
-      groups.unshift(group.group);
+      // console.log(groups);
+      // console.log(this.Groups);
+
       await this.setGroupsPosition(groups);
       console.log(this.Groups);
       this.load();

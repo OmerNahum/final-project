@@ -52,10 +52,12 @@
 import { mapActions, mapGetters } from "vuex";
 import DatePicker from "./DatePicker";
 import moment from "moment";
+import io from "socket.io-client";
 
 export default {
   name: "Add",
   created() {
+    this.socket = io("http://localhost:3000");
     this.setParticipants();
     this.createLoad = false;
   },
@@ -112,7 +114,7 @@ export default {
             this.uploadImage(formData);
           }
           await this.createGroup(data);
-
+          this.socket.emit("onGroupDelete");
           this.$router.push("Show");
         } catch (err) {
           console.log(err);

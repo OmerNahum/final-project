@@ -13,7 +13,7 @@ const msgSchema = new mongoose.Schema({
   },
   sendTime: {
     type: String,
-    default: moment().format("MMMM Do YYYY, h:mm:ss"),
+    default: moment(Date.now()).format("MMMM Do YYYY, h:mm:ss"),
   },
 });
 
