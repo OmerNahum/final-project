@@ -150,7 +150,11 @@ io.on("connection", (socket) => {
         message.endsWith(".bmp") ||
         message.endsWith(".jpg")
       ) {
-        room.messages.push({ user: " ", message: "\n \n \n \n" });
+        room.messages.push({
+          user: " ",
+          message: "\n \n \n \n",
+          sendTime: moment().format("MMMM Do YYYY, h:mm:ss"),
+        });
       }
       room.viewed.forEach((view) => (view.isViewed = false));
       console.log("userId", user._id);

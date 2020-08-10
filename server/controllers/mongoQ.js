@@ -85,6 +85,7 @@ exports.createGroup = async (req, res) => {
     name: req.body.groupData.name,
     image: req.body.groupData.image,
     participants: [req.user.id, ...usersId],
+    openTime: moment().format("MMMM Do YYYY, h:mm:ss"),
     viewed: [{ _id: req.user.id }, ...viewList],
     closingTime: req.body.groupData.closingTime,
     admin: [req.user.id],
@@ -118,23 +119,28 @@ exports.getAllGroups = async (req, res) => {
 
   filteredGroups.sort((g1, g2) => {
     if (g1.messages.length > 0 && g2.messages.length > 0) {
-      return g1.messages.slice(g1.messages.length - 1).sendTime <
-        g2.messages.slice(g2.messages.length - 1).sendTime
+      console.log(
+        "g2 bigger than g1",
+        g1.messages.slice(g1.messages.length - 1)[0].sendTime <
+          g2.messages.slice(g2.messages.length - 1)[0].sendTime
+      );
+      return g1.messages.slice(g1.messages.length - 1)[0].sendTime <
+        g2.messages.slice(g2.messages.length - 1)[0].sendTime
         ? 1
         : -1;
     } else if (g1.messages.length > 0) {
-      return g1.messages.slice(g1.messages.length - 1).sendTime < g2.openTime
+      return g1.messages.slice(g1.messages.length - 1)[0].sendTime > g2.openTime
         ? 1
         : -1;
     } else if (g2.messages.length > 0) {
-      return g1.openTime < g2.messages.slice(g1.messages.length - 1).sendTime
+      return g1.openTime > g2.messages.slice(g1.messages.length - 1)[0].sendTime
         ? 1
         : -1;
     } else {
       return g1.openTime < g2.openTime ? 1 : -1;
     }
   });
-
+  console.log("filtered", filteredGroups);
   res.status(200).send(filteredGroups);
 };
 
