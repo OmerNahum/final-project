@@ -129,11 +129,11 @@ exports.getAllGroups = async (req, res) => {
         ? 1
         : -1;
     } else if (g1.messages.length > 0) {
-      return g1.messages.slice(g1.messages.length - 1)[0].sendTime > g2.openTime
+      return g1.messages.slice(g1.messages.length - 1)[0].sendTime < g2.openTime
         ? 1
         : -1;
     } else if (g2.messages.length > 0) {
-      return g1.openTime > g2.messages.slice(g1.messages.length - 1)[0].sendTime
+      return g1.openTime < g2.messages.slice(g1.messages.length - 1)[0].sendTime
         ? 1
         : -1;
     } else {
