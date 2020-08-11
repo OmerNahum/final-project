@@ -48,7 +48,12 @@
               :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
               @click:append="showPassword = !showPassword"
             />
-            <v-dialog v-model="RegDialog" persistent max-width="600px">
+            <v-dialog
+              v-model="RegDialog"
+              persistent
+              max-width="600px"
+              @keydown.esc="setRegDialog(false)"
+            >
               <template v-slot:activator="{ on }">
                 <v-btn color="info" dark v-on="on" @click="setDialog"
                   >Add Interests</v-btn
@@ -64,9 +69,16 @@
                   </v-container>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn color="blue darken-1" text @click="setRegDialog(false)"
-                    >Close</v-btn
-                  >
+                  <v-container>
+                    <v-row dense>
+                      <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="setRegDialog(false)"
+                        >Close</v-btn
+                      >
+                    </v-row>
+                  </v-container>
                 </v-card-actions>
               </v-card>
             </v-dialog>

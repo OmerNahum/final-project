@@ -91,9 +91,15 @@
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="success" @click="passwordCheck(password)">Save</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn color="red white--text" to="/Show"> Cancel</v-btn>
+            <v-container>
+              <v-row dense>
+                <v-btn color="success" @click="passwordCheck(password)"
+                  >Save</v-btn
+                >
+                <v-spacer></v-spacer>
+                <v-btn color="red white--text" to="/Show"> Cancel</v-btn>
+              </v-row>
+            </v-container>
           </v-card-actions>
         </form>
       </v-card>

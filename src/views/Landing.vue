@@ -34,18 +34,28 @@
             </v-card-text>
           </v-form>
         </v-card-text>
-        <v-card-actions>
-          <v-btn small color="info" @click="login(password)">Login</v-btn>
-          <v-btn small color="success" router-link to="/Register"
-            >Register</v-btn
-          >
-          <v-spacer></v-spacer>
 
-          <a small href="http://localhost:3000/user/google">
-            <v-icon>
-              mdi-google
-            </v-icon>
-          </a>
+        <v-card-actions dense>
+          <v-container>
+            <v-row dense>
+              <v-btn small color="info" @click="login(password)">Login</v-btn>
+              <v-btn
+                small
+                class="ml-1"
+                color="success"
+                router-link
+                to="/Register"
+                >Register</v-btn
+              >
+              <v-spacer></v-spacer>
+
+              <a small href="http://localhost:3000/user/google">
+                <v-icon>
+                  mdi-google
+                </v-icon>
+              </a>
+            </v-row>
+          </v-container>
         </v-card-actions>
       </v-card>
     </v-layout>
