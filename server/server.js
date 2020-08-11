@@ -2,7 +2,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const port = 3000;
+const port = process.env.PORT || 3000;
 const chatRoutes = require("./routes/chat");
 const bodyParser = require("body-parser");
 const passport = require("passport");
@@ -57,6 +57,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // session.
 
 app.use("/user", userRoutes);
+
+if(process.env.NODE_ENV === 'production'){
+  app.use(express.static(__dirname + '/public/'))
+  app.get(/.*/,(req,res)=>{
+    res.sendFile(__dirname + '/public/index.html')
+  })
+}
 
 const server = app.listen(port, (err) => {
   if (err) {
