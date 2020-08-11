@@ -15,12 +15,14 @@
           <v-form>
             <v-text-field
               v-model="email"
+              @keydown.enter="login(password)"
               label="Email"
               :rules="emailRules"
               placeholder="email@email.com"
             />
             <v-text-field
               v-model="password"
+              @keydown.enter="login(password)"
               :type="showPassword ? 'text' : 'password'"
               label="Password"
               :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"

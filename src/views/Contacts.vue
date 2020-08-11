@@ -33,6 +33,7 @@
                     <v-text-field
                       v-model="contactEmail"
                       label="contact email"
+                      @keydown.enter="onSave"
                       required
                     ></v-text-field>
                   </v-col>
@@ -49,7 +50,14 @@
               <v-btn color="blue darken-1" text @click="dialog1 = false"
                 >Close</v-btn
               >
-              <v-btn color="blue darken-1" text @click="onSave">Save</v-btn>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click="onSave"
+                Add
+                :loading="addContactLoad"
+                >Save</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -164,6 +172,7 @@ export default {
     existValid: null,
     isLoading: false,
     isLoading1: false,
+    addContactLoad: false,
   }),
   methods: {
     load() {
@@ -181,6 +190,7 @@ export default {
       this.$router.push("/Add");
     },
     async onSave() {
+      this.addContactLoad = true;
       this.valid = true;
       this.existValid = false;
 
@@ -193,9 +203,12 @@ export default {
           this.dialog1 = false;
           this.dialog = false;
           this.load();
+          this.addContactLoad = false;
         } else if (message == "Unregistered user") {
+          this.addContactLoad = false;
           this.valid = false;
         } else if (message == "already exist") {
+          this.addContactLoad = false;
           this.existValid = true;
         }
       } catch (error) {

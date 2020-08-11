@@ -135,48 +135,63 @@
                   spellcheck
                   @keydown.enter="sendMessage"
                 ></v-textarea>
-                <v-dialog v-model="regDialog" persistent max-width="600px">
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      :loading="imageLoad"
-                      color="red lighten-3"
-                      x-small
-                      depressed
-                      fab
-                      v-on="on"
-                    >
-                      <v-icon>mdi-image</v-icon>
-                    </v-btn>
-                  </template>
-                  <v-card>
-                    <v-card-title>
-                      <span class="headline">Send Picture</span>
-                    </v-card-title>
-                    <v-card-text>
-                      <v-file-input
-                        v-model="image"
-                        :rules="groupImage"
-                        @change="onChange"
-                        accept="image/png, image/jpeg, image/bmp"
-                        placeholder="Pick group picture"
-                        prepend-icon="mdi-folder"
-                        label="Avatar"
-                      ></v-file-input>
-                    </v-card-text>
-                    <v-card-actions>
+                <form>
+                  <v-btn
+                    :loading="sendLoad"
+                    @click="sendMessage"
+                    fab
+                    small
+                    color="success"
+                  >
+                    Send</v-btn
+                  >
+                  <v-dialog v-model="regDialog" persistent max-width="600px">
+                    <template v-slot:activator="{ on }">
                       <v-btn
-                        color="blue darken-1"
-                        text
-                        @click="regDialog = false"
-                        >Close</v-btn
+                        class="ml-1"
+                        :loading="imageLoad"
+                        color="red lighten-3"
+                        x-small
+                        depressed
+                        fab
+                        v-on="on"
                       >
-                      <v-spacer></v-spacer>
-                      <v-btn color="success darken-1" text @click="onDialogSend"
-                        >Send</v-btn
-                      >
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
+                        <v-icon>mdi-image</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-card-title>
+                        <span class="headline">Send Picture</span>
+                      </v-card-title>
+                      <v-card-text>
+                        <v-file-input
+                          v-model="image"
+                          :rules="groupImage"
+                          @change="onChange"
+                          accept="image/png, image/jpeg, image/bmp"
+                          placeholder="Pick group picture"
+                          prepend-icon="mdi-folder"
+                          label="Avatar"
+                        ></v-file-input>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-btn
+                          color="blue darken-1"
+                          text
+                          @click="regDialog = false"
+                          >Close</v-btn
+                        >
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="success darken-1"
+                          text
+                          @click="onDialogSend"
+                          >Send</v-btn
+                        >
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </form>
               </v-form>
             </v-card>
             <v-card class="elevation-12" color="grey lighten-3" width="30%">
@@ -190,11 +205,17 @@
                   <template v-for="(item, index) in participants">
                     <v-subheader
                       class="d-flex justify-space-between"
-                      v-if="item"
+                      v-if="item && item !== user.email"
                       :key="index"
                     >
                       {{ item }}
-                      <v-btn x-small text color="red" @click="deletePart(item)">
+                      <v-btn
+                        x-small
+                        :loading="deletePartLoad"
+                        text
+                        color="red"
+                        @click="deletePart(item)"
+                      >
                         <v-icon
                           v-if="user._id.toString() == group.admin.toString()"
                         >
@@ -256,6 +277,8 @@ export default {
     regDialog: false,
     file: null,
     gpImage: null,
+    sendLoad: false,
+    deletePartLoad: false,
   }),
   methods: {
     async connectGroup() {
@@ -305,13 +328,17 @@ export default {
       container.scrollTop = container.scrollHeight;
     },
     async sendMessage(event) {
+      this.sendLoad = true;
       event.preventDefault();
 
       if (this.message != "") {
         this.socket.emit(
           "sendMessage",
           { user: this.user, roomId: this.group._id, message: this.message },
-          () => (this.message = "")
+          () => {
+            this.message = "";
+            this.sendLoad = false;
+          }
         );
       }
     },
@@ -330,11 +357,16 @@ export default {
       this.log = this.messages.map((p) => p.user + ": " + p.message);
     },
     async deletePart(email) {
+      this.deletePartLoad = true;
       if (this.user._id == this.group.admin) {
         const data = { email: email, groupId: this.group._id };
         await this.deleteChatPart(data);
         this.participants = this.chatPart.map((part) => part.email);
-      } else alert("Only admin can delete participants");
+        this.deletePartLoad = false;
+      } else {
+        alert("Only admin can delete participants");
+        this.deletePartLoad = true;
+      }
     },
     onSave() {
       if (this.chatGroup.admin.toString() == this.user._id.toString()) {
