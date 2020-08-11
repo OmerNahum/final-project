@@ -195,7 +195,9 @@
                     >
                       {{ item }}
                       <v-btn x-small text color="red" @click="deletePart(item)">
-                        <v-icon>
+                        <v-icon
+                          v-if="user._id.toString() == group.admin.toString()"
+                        >
                           mdi-delete
                         </v-icon>
                       </v-btn>
