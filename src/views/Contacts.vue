@@ -21,7 +21,7 @@
         <v-dialog v-model="dialog1" persistent max-width="600px">
           <template v-slot:activator="{}">
             <v-btn
-              :class="addContactMl"
+              :class="addContactMg"
               :x-small="xs"
               :small="s"
               :medium="s"
@@ -94,6 +94,7 @@
               :large="lg"
               :x-large="xl"
               color="brown"
+              :class="recommendedConMg"
               dark
               @click="setChooser(1)"
               >Recommended contact</v-btn
@@ -205,7 +206,8 @@ export default {
     md: false,
     lg: false,
     xl: false,
-    addContactMl: "",
+    addContactMg: "",
+    recommendedConMg: "",
   }),
   methods: {
     load() {
@@ -300,15 +302,22 @@ export default {
 
         switch (this.$vuetify.breakpoint.name) {
           case "xs":
-            this.addContactMl = "ml-1";
+            this.addContactMg = "ml-1";
+
             return (this.xs = true);
           case "sm":
             return (this.s = true);
           case "md":
+            this.addContactMg = "mr-1";
+            this.recommendedConMg = "mr-1";
             return (this.s = true);
           case "lg":
+            this.recommendedConMg = "mr-1";
+            this.addContactMg = "mr-1";
             return (this.md = true);
           case "xl":
+            this.addContactMg = "mr-1";
+            this.recommendedConMg = "mr-1";
             return (this.md = true);
           default:
             return (this.s = true);
