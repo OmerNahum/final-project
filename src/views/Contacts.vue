@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 <template>
-  <div class="Contacts">
+  <div class="Contacts" v-resize="btnSize">
     <h1 class="grey--text font-weight-light">Contacts</h1>
     <v-card width="400" class="weight-light">
       <v-text-field
@@ -20,7 +20,18 @@
       <div>
         <v-dialog v-model="dialog1" persistent max-width="600px">
           <template v-slot:activator="{}">
-            <v-btn color="info" dark @click="restartValid">Add contact</v-btn>
+            <v-btn
+              :class="addContactMl"
+              :x-small="xs"
+              :small="s"
+              :medium="s"
+              :large="lg"
+              :x-large="xl"
+              color="info"
+              dark
+              @click="restartValid"
+              >Add contact</v-btn
+            >
           </template>
           <v-card>
             <v-card-title>
@@ -65,6 +76,11 @@
           <template v-slot:activator="{}">
             <v-btn
               :loading="isLoading"
+              :x-small="xs"
+              :small="s"
+              :medium="s"
+              :large="lg"
+              :x-large="xl"
               color="purple"
               dark
               @click="setChooser(2)"
@@ -72,6 +88,11 @@
             >
             <v-btn
               :loading="isLoading1"
+              :x-small="xs"
+              :small="s"
+              :medium="s"
+              :large="lg"
+              :x-large="xl"
               color="brown"
               dark
               @click="setChooser(1)"
@@ -123,7 +144,12 @@
         {{ item.email }}
       </template>
       <template #item.action="{item}">
-        <v-btn icon color="red" @click="deleteCon(item._id)">
+        <v-btn
+          icon
+          color="red"
+          @click="deleteCon(item._id)"
+          :loading="deleteConLoad"
+        >
           <v-icon small>
             mdi-delete
           </v-icon>
@@ -173,12 +199,20 @@ export default {
     isLoading: false,
     isLoading1: false,
     addContactLoad: false,
+    deleteConLoad: false,
+    xs: false,
+    s: false,
+    md: false,
+    lg: false,
+    xl: false,
+    addContactMl: "",
   }),
   methods: {
     load() {
       this.user = this.User;
       this.users = this.Contacts;
       this.searchedUsers = this.Contacts;
+      this.deleteConLoad = false;
     },
     searchUsers() {
       this.searchedUsers = this.users.filter((u) =>
@@ -187,6 +221,7 @@ export default {
     },
     create() {
       this.updateContacts(this.selected);
+
       this.$router.push("/Add");
     },
     async onSave() {
@@ -226,6 +261,7 @@ export default {
       }
     },
     async deleteCon(id) {
+      this.deleteConLoad = true;
       await this.deleteContact(id);
 
       this.load();
@@ -253,6 +289,31 @@ export default {
         this.isLoading = false;
         this.dialog = true;
       }
+    },
+    btnSize() {
+      setTimeout(() => {
+        this.xs = false;
+        this.s = false;
+        this.md = false;
+        this.lg = false;
+        this.xl = false;
+
+        switch (this.$vuetify.breakpoint.name) {
+          case "xs":
+            this.addContactMl = "ml-1";
+            return (this.xs = true);
+          case "sm":
+            return (this.s = true);
+          case "md":
+            return (this.s = true);
+          case "lg":
+            return (this.md = true);
+          case "xl":
+            return (this.md = true);
+          default:
+            return (this.s = true);
+        }
+      }, 500);
     },
     setChooser(number) {
       this.chooser = number;

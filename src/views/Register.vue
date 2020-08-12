@@ -59,6 +59,7 @@
                   <v-btn
                     :x-small="xs"
                     :small="s"
+                    ::medium="md"
                     :large="lg"
                     :x-large="xl"
                     color="info"
@@ -122,6 +123,7 @@
                 <v-btn
                   :x-small="xs"
                   :small="s"
+                  :medium="md"
                   :large="lg"
                   :x-large="xl"
                   color="red white--text"
@@ -239,15 +241,15 @@ export default {
         switch (this.$vuetify.breakpoint.name) {
           case "xs":
             this.cardWidth = window.outerWidth;
-            return (this.xs = true);
+            return (this.s = true);
           case "sm":
             return (this.s = true);
           case "md":
             return (this.md = true);
           case "lg":
-            return (this.lg = true);
+            return (this.md = true);
           case "xl":
-            return (this.xl = true);
+            return (this.lg = true);
           default:
             return (this.md = true);
         }

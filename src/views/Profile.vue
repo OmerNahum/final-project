@@ -106,6 +106,7 @@
                   :large="lg"
                   :x-large="xl"
                   color="success"
+                  :loading="saveLoad"
                   @click="passwordCheck(password)"
                   >Save</v-btn
                 >
@@ -173,6 +174,7 @@ export default {
     dialog: false,
     file: null,
     user: null,
+    saveLoad: false,
     cardWidth: window.outerWidth * 0.33,
     cardHeight: window.outerHeight * 0.25,
     xs: false,
@@ -213,6 +215,7 @@ export default {
         await this.changeProfile(data);
         this.errorMessage = this.Valid;
 
+        this.saveLoad = false;
         if (!this.errorMessage) {
           this.$router.push("/Show");
         }
@@ -225,6 +228,7 @@ export default {
       if (this.password !== this.confirmPassword) return;
 
       if (this.password == "" || this.password.length >= 4) {
+        this.saveLoad = true;
         this.setNewProfile();
       } else {
         this.valid3 = true;
@@ -253,7 +257,7 @@ export default {
         this.s = false;
         this.lg = false;
         this.xl = false;
-        console.log(this.$vuetify.breakpoint.name);
+
         switch (this.$vuetify.breakpoint.name) {
           case "xs":
             this.cardWidth = window.outerWidth;
@@ -263,9 +267,9 @@ export default {
           case "md":
             return (this.md = true);
           case "lg":
-            return (this.lg = true);
+            return (this.md = true);
           case "xl":
-            return (this.xl = true);
+            return (this.md = true);
           default:
             return (this.md = true);
         }

@@ -16,7 +16,6 @@
             <v-form>
               <v-text-field
                 v-model="email"
-                @keydown.enter="login(password)"
                 label="Email"
                 :rules="emailRules"
                 placeholder="email@email.com"
@@ -43,6 +42,7 @@
               <v-btn
                 :x-small="xs"
                 :small="s"
+                :medium="md"
                 :large="lg"
                 :x-large="xl"
                 color="info"
@@ -52,6 +52,7 @@
               <v-btn
                 :x-small="xs"
                 :small="s"
+                :medium="md"
                 :large="lg"
                 :x-large="xl"
                 class="ml-1"
@@ -63,7 +64,7 @@
               <v-spacer></v-spacer>
 
               <a href="http://localhost:3000/user/google">
-                <v-icon :small="xs" :medium="s" :large="lg" :x-large="xl">
+                <v-icon :small="xs" :medium="s" :large="md" :x-large="lg">
                   mdi-google
                 </v-icon>
               </a>
@@ -106,6 +107,7 @@ export default {
     cardWidth: window.outerWidth * 0.33,
     xs: false,
     s: true,
+    md: false,
     lg: false,
     xl: false,
   }),
@@ -143,21 +145,22 @@ export default {
         this.cardWidth = window.outerWidth * 0.33;
         this.xs = false;
         this.s = false;
+        this.md = false;
         this.lg = false;
         this.xl = false;
-        console.log(this.$vuetify.breakpoint.name);
+
         switch (this.$vuetify.breakpoint.name) {
           case "xs":
             this.cardWidth = window.outerWidth;
-            return (this.xs = true);
+            return (this.s = true);
           case "sm":
             return (this.s = true);
           case "md":
             return (this.s = true);
           case "lg":
-            return (this.lg = true);
+            return (this.s = true);
           case "xl":
-            return (this.xl = true);
+            return (this.md = true);
           default:
             return (this.md = true);
         }
