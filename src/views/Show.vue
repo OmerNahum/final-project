@@ -62,7 +62,7 @@
           :loading="deleteLoader"
           @click="deleteGroup(item._id)"
         >
-          <v-icon small>
+          <v-icon small title="delete and leave group">
             mdi-delete
           </v-icon>
         </v-btn>

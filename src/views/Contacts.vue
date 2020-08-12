@@ -14,7 +14,7 @@
       <v-btn x-small color="info" @click="searchUsers(name)">search</v-btn>
     </v-card>
     <div class=" d-flex justify-space-between">
-      <v-btn small depressed append color="success" @click="load"
+      <v-btn class="mt-1" small depressed append color="success" @click="load"
         >Load-all-Users
       </v-btn>
       <div>

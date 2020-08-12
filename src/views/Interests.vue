@@ -15,7 +15,9 @@
         {{ item.name }}
       </template>
     </v-data-table>
-    <v-btn large color="success" @click="selectedHandler">Done</v-btn>
+    <v-btn :loading="doneLoad" large color="success" @click="selectedHandler"
+      >Done</v-btn
+    >
   </div>
 </template>
 
@@ -39,12 +41,14 @@ export default {
     ],
     headers: [{ text: "Interests", value: "Interests" }],
     vec: [],
+    doneLoad: false,
   }),
   computed: {
     ...mapGetters(["User", "RegDialog"]),
   },
   methods: {
     async selectedHandler() {
+      this.doneLoad = true;
       this.vec = [];
       let i = 0;
       if (this.selected.length > 0) {
@@ -64,8 +68,10 @@ export default {
       await this.currentUser();
       if (this.User) {
         this.setInterests({ vector: this.vec, user: this.User });
+        this.doneLoad = false;
         this.$router.push("/Show");
       } else {
+        this.doneLoad = false;
         this.setInterests({ vector: this.vec, user: null });
         this.setRegDialog(false);
       }
