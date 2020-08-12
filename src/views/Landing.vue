@@ -8,41 +8,52 @@
         fill-height
         v-resize="onResize"
       >
-        <v-card-title>
-          <h1 class="display font-weight-light info--text">Login</h1>
-        </v-card-title>
-        <v-card-text>
-          <v-form>
-            <v-text-field
-              v-model="email"
-              @keydown.enter="login(password)"
-              label="Email"
-              :rules="emailRules"
-              placeholder="email@email.com"
-            />
-            <v-text-field
-              v-model="password"
-              @keydown.enter="login(password)"
-              :type="showPassword ? 'text' : 'password'"
-              label="Password"
-              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-              @click:append="showPassword = !showPassword"
-            />
-            <v-card-text v-if="!valid" class="error--text"
-              >Password or Username incorrect</v-card-text
-            >
-            <v-card-text v-if="valid3" class="error--text"
-              >Wrong password
-            </v-card-text>
-          </v-form>
-        </v-card-text>
+        <v-container>
+          <v-card-title>
+            <h1 class="display font-weight-light info--text">Login</h1>
+          </v-card-title>
+          <v-card-text>
+            <v-form>
+              <v-text-field
+                v-model="email"
+                @keydown.enter="login(password)"
+                label="Email"
+                :rules="emailRules"
+                placeholder="email@email.com"
+              />
+              <v-text-field
+                v-model="password"
+                @keydown.enter="login(password)"
+                :type="showPassword ? 'text' : 'password'"
+                label="Password"
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                @click:append="showPassword = !showPassword"
+              />
+              <v-card-text v-if="!valid" class="error--text"
+                >Password or Username incorrect</v-card-text
+              >
+              <v-card-text v-if="valid3" class="error--text"
+                >Wrong password
+              </v-card-text>
+            </v-form>
+          </v-card-text>
 
-        <v-card-actions dense>
-          <v-container>
+          <v-card-actions>
             <v-row dense>
-              <v-btn small color="info" @click="login(password)">Login</v-btn>
               <v-btn
-                small
+                :x-small="xs"
+                :small="s"
+                :large="lg"
+                :x-large="xl"
+                color="info"
+                @click="login(password)"
+                >Login</v-btn
+              >
+              <v-btn
+                :x-small="xs"
+                :small="s"
+                :large="lg"
+                :x-large="xl"
                 class="ml-1"
                 color="success"
                 router-link
@@ -51,14 +62,14 @@
               >
               <v-spacer></v-spacer>
 
-              <a small href="http://localhost:3000/user/google">
-                <v-icon>
+              <a href="http://localhost:3000/user/google">
+                <v-icon :small="xs" :medium="s" :large="lg" :x-large="xl">
                   mdi-google
                 </v-icon>
               </a>
             </v-row>
-          </v-container>
-        </v-card-actions>
+          </v-card-actions>
+        </v-container>
       </v-card>
     </v-layout>
   </v-app>
@@ -93,6 +104,10 @@ export default {
     valid4: false,
     types: [],
     cardWidth: window.outerWidth * 0.33,
+    xs: false,
+    s: true,
+    lg: false,
+    xl: false,
   }),
   methods: {
     async login() {
@@ -124,7 +139,29 @@ export default {
       }
     },
     onResize() {
-      this.cardWidth = window.outerWidth * 0.33;
+      setTimeout(() => {
+        this.cardWidth = window.outerWidth * 0.33;
+        this.xs = false;
+        this.s = false;
+        this.lg = false;
+        this.xl = false;
+        console.log(this.$vuetify.breakpoint.name);
+        switch (this.$vuetify.breakpoint.name) {
+          case "xs":
+            this.cardWidth = window.outerWidth;
+            return (this.xs = true);
+          case "sm":
+            return (this.s = true);
+          case "md":
+            return (this.s = true);
+          case "lg":
+            return (this.lg = true);
+          case "xl":
+            return (this.xl = true);
+          default:
+            return (this.md = true);
+        }
+      }, 500);
     },
     ...mapActions(["setUser", "setUserBygoogle", "currentUser"]),
   },

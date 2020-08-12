@@ -8,53 +8,58 @@
         v-resize="onResize"
         fill-height
       >
-        <form>
-          <v-card-title>
-            <h1 class="display font-weight-light info--text">Profile</h1>
-          </v-card-title>
+        <v-container>
+          <form>
+            <v-card-title>
+              <h1 class="display font-weight-light info--text">Profile</h1>
+            </v-card-title>
 
-          <v-card-text>
-            <v-form>
-              <v-input disabled
-                ><v-avatar><img :src="user.image"/></v-avatar>
-                {{ this.firstName }}</v-input
-              >
-              <v-text-field v-model="firstName" label="First Name *" required />
-              <v-text-field v-model="lastName" label="Last Name" />
-              <v-text-field
-                v-model="email"
-                label="Email *"
-                :rules="emailRules"
-                placeholder="email@email.com"
-                required
-              />
-              <v-file-input
-                v-model="image"
-                :rules="groupImage"
-                @change="onChange"
-                accept="image/png, image/jpeg, image/bmp"
-                placeholder="Pick group picture"
-                prepend-icon="mdi-folder"
-                label="Change Avatar"
-              ></v-file-input>
+            <v-card-text>
+              <v-form>
+                <v-input disabled
+                  ><v-avatar><img :src="user.image"/></v-avatar>
+                  {{ this.firstName }}</v-input
+                >
+                <v-text-field
+                  v-model="firstName"
+                  label="First Name *"
+                  required
+                />
+                <v-text-field v-model="lastName" label="Last Name" />
+                <v-text-field
+                  v-model="email"
+                  label="Email *"
+                  :rules="emailRules"
+                  placeholder="email@email.com"
+                  required
+                />
+                <v-file-input
+                  v-model="image"
+                  :rules="groupImage"
+                  @change="onChange"
+                  accept="image/png, image/jpeg, image/bmp"
+                  placeholder="Pick group picture"
+                  prepend-icon="mdi-folder"
+                  label="Change Avatar"
+                ></v-file-input>
 
-              <v-text-field
-                required
-                v-model="password"
-                :type="showPassword ? 'text' : 'password'"
-                label="New Password (not required)"
-                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                @click:append="showPassword = !showPassword"
-              />
-              <v-text-field
-                required
-                v-model="confirmPassword"
-                :type="showPassword ? 'text' : 'password'"
-                label="Confirm New Password"
-                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                @click:append="showPassword = !showPassword"
-              />
-              <!-- <v-dialog v-model="RegDialog" persistent max-width="600px">
+                <v-text-field
+                  required
+                  v-model="password"
+                  :type="showPassword ? 'text' : 'password'"
+                  label="New Password (not required)"
+                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="showPassword = !showPassword"
+                />
+                <v-text-field
+                  required
+                  v-model="confirmPassword"
+                  :type="showPassword ? 'text' : 'password'"
+                  label="Confirm New Password"
+                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="showPassword = !showPassword"
+                />
+                <!-- <v-dialog v-model="RegDialog" persistent max-width="600px">
             <template v-slot:activator="{ on }">
               <v-btn color="info" dark v-on="on" @click="setDialog"
                 >Set Interests</v-btn
@@ -76,32 +81,50 @@
               </v-card-actions>
             </v-card>
           </v-dialog> -->
-              <v-card-text v-if="password != confirmPassword" class="red--text"
-                >Password don't match</v-card-text
-              >
-              <v-card-text v-if="!valid" class="error--text"
-                >You must fill all * fields</v-card-text
-              >
-              <v-card-text v-if="valid2" class="error--text"
-                >Email already exist</v-card-text
-              >
-              <v-card-text v-if="valid3" class="error--text"
-                >Password must have 4 or more characters
-              </v-card-text>
-            </v-form>
-          </v-card-text>
-          <v-card-actions>
-            <v-container>
+                <v-card-text
+                  v-if="password != confirmPassword"
+                  class="red--text"
+                  >Password don't match</v-card-text
+                >
+                <v-card-text v-if="!valid" class="error--text"
+                  >You must fill all * fields</v-card-text
+                >
+                <v-card-text v-if="valid2" class="error--text"
+                  >Email already exist</v-card-text
+                >
+                <v-card-text v-if="valid3" class="error--text"
+                  >Password must have 4 or more characters
+                </v-card-text>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
               <v-row dense>
-                <v-btn color="success" @click="passwordCheck(password)"
+                <v-btn
+                  :x-small="xs"
+                  :small="s"
+                  :medium="md"
+                  :large="lg"
+                  :x-large="xl"
+                  color="success"
+                  @click="passwordCheck(password)"
                   >Save</v-btn
                 >
                 <v-spacer></v-spacer>
-                <v-btn color="red white--text" to="/Show"> Cancel</v-btn>
+                <v-btn
+                  :x-small="xs"
+                  :small="s"
+                  :medium="md"
+                  :large="lg"
+                  :x-large="xl"
+                  color="red white--text"
+                  to="/Show"
+                >
+                  Cancel</v-btn
+                >
               </v-row>
-            </v-container>
-          </v-card-actions>
-        </form>
+            </v-card-actions>
+          </form>
+        </v-container>
       </v-card>
     </v-layout>
   </v-app>
@@ -152,6 +175,11 @@ export default {
     user: null,
     cardWidth: window.outerWidth * 0.33,
     cardHeight: window.outerHeight * 0.25,
+    xs: false,
+    s: true,
+    lg: false,
+    xl: false,
+    md: true,
   }),
   methods: {
     setUser() {
@@ -218,8 +246,30 @@ export default {
       this.file = e;
     },
     onResize() {
-      this.cardWidth = window.outerWidth * 0.33;
-      this.cardHeight = window.outerHeight * 0.25;
+      setTimeout(() => {
+        this.cardWidth = window.outerWidth * 0.33;
+        this.cardHeight = window.outerHeight * 0.25;
+        this.xs = false;
+        this.s = false;
+        this.lg = false;
+        this.xl = false;
+        console.log(this.$vuetify.breakpoint.name);
+        switch (this.$vuetify.breakpoint.name) {
+          case "xs":
+            this.cardWidth = window.outerWidth;
+            return (this.xs = true);
+          case "sm":
+            return (this.s = true);
+          case "md":
+            return (this.md = true);
+          case "lg":
+            return (this.lg = true);
+          case "xl":
+            return (this.xl = true);
+          default:
+            return (this.md = true);
+        }
+      }, 500);
     },
   },
 };
