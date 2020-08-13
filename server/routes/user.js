@@ -46,7 +46,6 @@ router.post("/setGroupNameAndClosing", userController.setGroupNameAndClosing);
 router.get("/recommendedContacts", userController.recommendedContacts);
 router.get("/recommendedGroups", userController.recommendedGroups);
 router.post("/upload", (req, res) => {
-  console.log("hellooopfakslgk");
   const file = req.files.file;
 
   file.mv(`${__dirname}/../../public/${file.name}`, (err) => {

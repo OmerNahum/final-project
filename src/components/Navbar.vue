@@ -11,7 +11,7 @@
         </v-toolbar-title>
       </a>
       <v-spacer></v-spacer>
-      <v-btn class="red white--text" small @click="this.userLogout"
+      <v-btn :loading="logoutLoad" class="red white--text" small @click="logout"
         >Logout</v-btn
       >
     </v-toolbar>
@@ -47,7 +47,9 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
-  created() {},
+  created() {
+    this.logoutLoad = false;
+  },
   props: [],
   computed: { ...mapGetters(["navbar"]) },
   data: () => ({
@@ -73,12 +75,18 @@ export default {
         route: "/Contacts",
       },
     ],
+    logoutLoad: false,
   }),
   methods: {
     check() {
       if (this.$route.fullPath == "/" || this.$route.fullPath == "/Register") {
         this.drawer = false;
       }
+    },
+    async logout() {
+      this.logoutLoad = true;
+      await this.userLogout();
+      this.userLogout = false;
     },
     ...mapActions(["userLogout"]),
     pushToShow() {
