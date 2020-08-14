@@ -53,6 +53,7 @@ import { mapActions, mapGetters } from "vuex";
 import DatePicker from "./DatePicker";
 import moment from "moment";
 import io from "socket.io-client";
+const axios = require("axios");
 
 export default {
   name: "Add",
@@ -109,17 +110,41 @@ export default {
         this.updateContacts(null);
         try {
           if (this.file) {
-            const formData = new FormData();
-            formData.append("file", this.file);
-            this.uploadImage(formData);
+            const reader = new FileReader();
+            reader.readAsDataURL(this.file);
+            reader.onloadend = async () => {
+              data.image = await this.uploadImage2(reader.result);
+              await this.createGroup(data);
+              this.socket.emit("onGroupDelete");
+              this.$router.push("Show");
+            };
+            reader.onerror = () => {
+              console.error("AHHHHHHHH!!");
+            };
+            // this.uploadImage(formData);
           }
-          await this.createGroup(data);
-          this.socket.emit("onGroupDelete");
-          this.$router.push("Show");
         } catch (err) {
           console.log(err);
+          this.createLoad = false;
         }
-      } else this.valid = false;
+      } else {
+        this.valid = false;
+        this.createLoad = false;
+      }
+    },
+    async uploadImage2(base64EncodedImage) {
+      try {
+        const data = await axios({
+          url: "/user/upload",
+          method: "post",
+          data: JSON.stringify({ data: base64EncodedImage }),
+          headers: { "Content-Type": "application/json" },
+        });
+        console.log(data);
+        return data.data.secure_url;
+      } catch (err) {
+        console.error(err);
+      }
     },
     restart() {
       this.GroupName = "";

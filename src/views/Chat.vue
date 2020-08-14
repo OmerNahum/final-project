@@ -239,15 +239,15 @@ import { mapGetters, mapActions } from "vuex";
 import io from "socket.io-client";
 import DatePicker from "./DatePicker";
 import moment from "moment";
-
+const axios = require("axios");
 export default {
   created() {
     this.socket = io("http://localhost:3000");
     this.connectGroup();
-    (this.imageLoad = false),
-      setTimeout(() => {
-        this.scrollToEnd();
-      }, 1000);
+    this.imageLoad = false;
+    setTimeout(() => {
+      this.scrollToEnd();
+    }, 1000);
   },
   components: { DatePicker },
   computed: {
@@ -291,7 +291,7 @@ export default {
       this.roomId = this.group._id;
       await this.createLogs(this.group._id);
       this.messages = this.Logs;
-
+      console.log(this.messages);
       await this.setChatPart(this.chatGroup.participants);
 
       this.participants = this.chatPart.map((user) => user.email);
@@ -316,10 +316,12 @@ export default {
           messages.messages.user != " "
             ? messages.messages.user + ": " + messages.messages.message
             : messages.messages.message;
+
         this.messages.push(message);
 
         setTimeout(() => {
           this.scrollToEnd();
+          this.imageLoad = false;
         }, 100);
       });
     },
@@ -371,8 +373,7 @@ export default {
     onSave() {
       if (this.chatGroup.admin.toString() == this.user._id.toString()) {
         this.dialog = false;
-
-        this.group.image = this.gpImage ? this.gpImage : this.group.image;
+        this.group.image = this.imageUrl ? this.imageUrl : this.group.image;
         this.setGroupNameAndClosing(this.group);
         this.socket.emit("onChange", { group: this.group });
       } else {
@@ -383,24 +384,54 @@ export default {
     onDialogSend() {
       this.imageLoad = true;
       this.regDialog = false;
+      let img;
       if (this.image) {
-        const formData = new FormData();
-        formData.append("file", this.file);
-        this.uploadImage(formData);
+        // const formData = new FormData();
+        // formData.append("file", this.file);
+        // this.uploadImage(formData);
+        try {
+          if (this.file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(this.file);
+            reader.onloadend = async () => {
+              img = await this.uploadImage2(reader.result);
+              console.log(img);
+              this.socket.emit(
+                "sendMessage",
+                { user: this.user, roomId: this.group._id, message: img },
+                () => (this.message = "")
+              );
+            };
+            reader.onerror = () => {
+              console.error("AHHHHHHHH!!");
+            };
+            // this.uploadImage(formData);
+          }
+        } catch (err) {
+          console.log(err);
+          this.imageLoad = false;
+        }
       }
-      if (this.file) {
-        this.socket.emit(
-          "sendMessage",
-          { user: this.user, roomId: this.group._id, message: this.file.name },
-          () => (this.message = "")
-        );
+    },
+    async uploadImage2(base64EncodedImage) {
+      try {
+        const data = await axios({
+          url: "/user/upload",
+          method: "post",
+          data: JSON.stringify({ data: base64EncodedImage }),
+          headers: { "Content-Type": "application/json" },
+        });
+        console.log(data);
+        return data.data.secure_url;
+      } catch (err) {
+        console.error(err);
       }
     },
     onChange(e) {
       this.imageUrl = e.name;
       this.file = e;
     },
-    ...mapActions(["uploadImage"]),
+    // ...mapActions(["uploadImage"]),
   },
   beforeDestroy() {
     this.messages = [];

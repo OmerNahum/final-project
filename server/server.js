@@ -43,7 +43,7 @@ app.use(
     keys: ["ljqelkqjnekwjrkewlklnkjjkjkb"],
   })
 );
-
+app.use(bodyParser({ limit: "50mb" }));
 app.use(cors());
 app.use(require("body-parser").urlencoded({ extended: true }));
 app.use(flash());
@@ -58,11 +58,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/user", userRoutes);
 
-if(process.env.NODE_ENV === 'production'){
-  app.use(express.static(__dirname + '/public/'))
-  app.get(/.*/,(req,res)=>{
-    res.sendFile(__dirname + '/public/index.html')
-  })
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(__dirname + "/public/"));
+  app.get(/.*/, (req, res) => {
+    res.sendFile(__dirname + "/public/index.html");
+  });
 }
 
 const server = app.listen(port, (err) => {
@@ -141,7 +141,11 @@ io.on("connection", (socket) => {
       ) {
         room.messages.push({ user: " ", message: "\n \n \n \n" });
       }
-      room.messages.push({ user: user.firstName, message: message.trim() });
+      room.messages.push({
+        user: user.firstName,
+        message: message.trim(),
+        sendTime: moment().format("MMMM Do YYYY, h:mm:ss"),
+      });
       if (
         message.endsWith(".png") ||
         message.endsWith(".jpeg") ||
@@ -169,7 +173,13 @@ io.on("connection", (socket) => {
       io.emit("change", { group: room });
       // io.emit("changePosition", { groups: groups });
       io.to(roomId).emit("message", {
-        messages: room.messages[room.messages.length - 1],
+        messages:
+          message.endsWith(".png") ||
+          message.endsWith(".jpeg") ||
+          message.endsWith(".bmp") ||
+          message.endsWith(".jpg")
+            ? room.messages[room.messages.length - 2]
+            : room.messages[room.messages.length - 1],
       });
       callback();
     }

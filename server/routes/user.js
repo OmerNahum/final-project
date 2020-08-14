@@ -1,4 +1,7 @@
 const express = require("express");
+//const axios = require("axios");
+const { cloudinary } = require("../utils/cloudinary");
+
 require("mongoose");
 //const userController = require("../controllers/user");
 const userController = require("../controllers/mongoQ");
@@ -45,16 +48,39 @@ router.post("/setInterests", userController.setInterests);
 router.post("/setGroupNameAndClosing", userController.setGroupNameAndClosing);
 router.get("/recommendedContacts", userController.recommendedContacts);
 router.get("/recommendedGroups", userController.recommendedGroups);
-router.post("/upload", (req, res) => {
-  const file = req.files.file;
+router.post("/upload", async (req, res) => {
+  // console.log("req.body", req.body);
+  // console.log("req.body", req.files);
+  // const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dzhfa0ywj";
 
-  file.mv(`${__dirname}/../../public/${file.name}`, (err) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send({ message: "could not upload" });
-    }
-    return res.status(200);
-  });
+  // axios({
+  //   url: CLOUDINARY_URL,
+  //   method: "post",
+  //   headers: {
+  //     "Content-Type": "application/x-www-form-urlencoded",
+  //   },
+  //   data: { upload_preset: req.body.upload_preset, file: req.files.file },
+  // })
+  //   .then((result) => {
+  //     console.log(result.data.secure_url);
+  //     res.status(200).send(result.data.secure_url);
+
+  //   })
+  //   .catch((error) => {
+  //     console.log("files error", error.message);
+  //   });
+
+  try {
+    const fileStr = req.body.data;
+    const uploadResponse = await cloudinary.uploader.upload(fileStr, {
+      upload_preset: "y1g5txmx",
+    });
+    console.log("uploadResponse", uploadResponse);
+    res.send(uploadResponse);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err: "Something went wrong" });
+  }
 });
 router.post("/changeProfile", userController.changeProfile);
 router.post("/setLastSeen", userController.setLastSeen);

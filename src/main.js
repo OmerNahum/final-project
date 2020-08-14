@@ -252,13 +252,15 @@ export const store = new Vuex.Store({
 
       context.commit("setRecommended", recommended.data);
     },
-    async uploadImage(context, FormData) {
-      try {
-        await axios.post("/user/upload", FormData);
-      } catch (error) {
-        context.commit("setErrorMessage", error);
-      }
-    },
+    // async uploadImage(context, formData) {
+    //   try {
+    //     const url = await axios.post("/user/upload", formData);
+    //     console.log(url)
+
+    //   } catch (error) {
+    //     context.commit("setErrorMessage", error);
+    //   }
+    // },
     async changeProfile(context, profileData) {
       // eslint-disable-next-line no-unused-vars
 
