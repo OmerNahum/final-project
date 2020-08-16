@@ -117,6 +117,7 @@
                   :x-large="xl"
                   color="success"
                   @click="passwordCheck(password)"
+                  :loading="registerBtnLoad"
                   >Register</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -187,6 +188,7 @@ export default {
     md: false,
     lg: false,
     xl: false,
+    registerBtnLoad: false,
   }),
   methods: {
     addUser() {
@@ -209,26 +211,68 @@ export default {
             ? this.Interests
             : new Array(Interests.data().interests.length).fill(0),
         };
-        if (this.file) {
-          const formData = new FormData();
-          formData.append("file", this.file);
-          this.uploadImage(formData);
+        try {
+          if (this.file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(this.file);
+            reader.onloadend = async () => {
+              data.image = await this.uploadImage2(reader.result);
+              var url = `/user/addUser`;
+
+              axios
+                .post(url, data)
+                .then(() => {
+                  setTimeout(() => {}, 200);
+                  this.$router.push("/");
+                  this.registerBtnLoad = false;
+                })
+                .catch((err) => {
+                  console.log(err);
+                  this.registerBtnLoad = false;
+                });
+            };
+            reader.onerror = () => {
+              console.error("AHHHHHHHH!!");
+            };
+            // this.uploadImage(formData);
+          } else {
+            var url = `/user/addUser`;
+
+            axios
+              .post(url, data)
+              .then(() => {
+                setTimeout(() => {}, 200);
+                this.$router.push("/");
+                this.registerBtnLoad = false;
+              })
+              .catch((err) => {
+                console.log(err);
+                this.valid2 = true;
+              });
+          }
+        } catch (err) {
+          console.log(err);
+          this.registerBtnLoad = false;
         }
-
-        var url = `/user/addUser`;
-
-        axios
-          .post(url, data)
-          .then(() => {
-            setTimeout(() => {}, 200);
-            this.$router.push("/");
-          })
-          .catch((err) => {
-            console.log(err);
-            this.valid2 = true;
-          });
-      } else this.valid = false;
+      } else {
+        this.valid = false;
+        this.registerBtnLoad = false;
+      }
     },
+    // async uploadImage2(base64EncodedImage) {
+    //   try {
+    //     const data = await axios({
+    //       url: "/user/upload",
+    //       method: "post",
+    //       data: JSON.stringify({ data: base64EncodedImage }),
+    //       headers: { "Content-Type": "application/json" },
+    //     });
+
+    //     return data.data.secure_url;
+    //   } catch (err) {
+    //     console.error(err);
+    //   }
+    // },
     btnSize() {
       setTimeout(() => {
         this.cardWidth = window.outerWidth * 0.3;
@@ -258,17 +302,18 @@ export default {
     passwordCheck() {
       this.valid3 = false;
       this.valid = true;
-
+      this.registerBtnLoad = true;
       if (this.password.length >= 4) {
         this.addUser();
       } else {
+        this.registerBtnLoad = false;
         this.valid3 = true;
       }
     },
     setDialog() {
       this.setRegDialog(true);
     },
-    ...mapActions(["setRegDialog", "uploadImage"]),
+    ...mapActions(["setRegDialog", "uploadImage2"]),
     restart() {
       this.password = "";
       this.firstName = "";

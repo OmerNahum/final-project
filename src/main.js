@@ -261,6 +261,20 @@ export const store = new Vuex.Store({
     //     context.commit("setErrorMessage", error);
     //   }
     // },
+    async uploadImage2(context, base64EncodedImage) {
+      try {
+        const data = await axios({
+          url: "/user/upload",
+          method: "post",
+          data: JSON.stringify({ data: base64EncodedImage }),
+          headers: { "Content-Type": "application/json" },
+        });
+
+        return data.data.secure_url;
+      } catch (err) {
+        console.error(err);
+      }
+    },
     async changeProfile(context, profileData) {
       // eslint-disable-next-line no-unused-vars
 

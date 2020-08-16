@@ -239,7 +239,7 @@ import { mapGetters, mapActions } from "vuex";
 import io from "socket.io-client";
 import DatePicker from "./DatePicker";
 import moment from "moment";
-const axios = require("axios");
+// const axios = require("axios");
 export default {
   created() {
     this.socket = io("http://localhost:3000");
@@ -353,6 +353,7 @@ export default {
       "setChatPart",
       "deleteChatPart",
       "setGroupNameAndClosing",
+      "uploadImage2",
     ]),
     submit() {
       this.log = this.messages.map((p) => p.user + ": " + p.message);
@@ -385,7 +386,6 @@ export default {
             reader.onerror = () => {
               console.error("AHHHHHHHH!!");
             };
-            // this.uploadImage(formData);
           } else {
             this.setGroupNameAndClosing(this.group);
             this.socket.emit("onChange", { group: this.group });
@@ -404,9 +404,6 @@ export default {
       this.regDialog = false;
       let img;
       if (this.image) {
-        // const formData = new FormData();
-        // formData.append("file", this.file);
-        // this.uploadImage(formData);
         try {
           if (this.file) {
             const reader = new FileReader();
@@ -439,20 +436,7 @@ export default {
       this.imageUrl = null;
       this.gpImage = null;
     },
-    async uploadImage2(base64EncodedImage) {
-      try {
-        const data = await axios({
-          url: "/user/upload",
-          method: "post",
-          data: JSON.stringify({ data: base64EncodedImage }),
-          headers: { "Content-Type": "application/json" },
-        });
 
-        return data.data.secure_url;
-      } catch (err) {
-        console.error(err);
-      }
-    },
     onChange(e) {
       this.imageUrl = e.name;
       this.file = e;

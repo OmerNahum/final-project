@@ -53,7 +53,7 @@ import { mapActions, mapGetters } from "vuex";
 import DatePicker from "./DatePicker";
 import moment from "moment";
 import io from "socket.io-client";
-const axios = require("axios");
+//const axios = require("axios");
 
 export default {
   name: "Add",
@@ -114,6 +114,7 @@ export default {
             reader.readAsDataURL(this.file);
             reader.onloadend = async () => {
               data.image = await this.uploadImage2(reader.result);
+              console.log(data.image);
               await this.createGroup(data);
               this.socket.emit("onGroupDelete");
               this.$router.push("Show");
@@ -136,20 +137,6 @@ export default {
         this.createLoad = false;
       }
     },
-    async uploadImage2(base64EncodedImage) {
-      try {
-        const data = await axios({
-          url: "/user/upload",
-          method: "post",
-          data: JSON.stringify({ data: base64EncodedImage }),
-          headers: { "Content-Type": "application/json" },
-        });
-
-        return data.data.secure_url;
-      } catch (err) {
-        console.error(err);
-      }
-    },
     restart() {
       this.GroupName = "";
       this.participants = "";
@@ -161,7 +148,7 @@ export default {
     m() {
       console.log(this.date);
     },
-    ...mapActions(["createGroup", "updateContacts" /*, "uploadImage"*/]),
+    ...mapActions(["createGroup", "updateContacts", "uploadImage2"]),
     onChangeChild(value) {
       this.closingTime = moment(value)
         .add(14, "hours")

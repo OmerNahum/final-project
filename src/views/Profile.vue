@@ -138,7 +138,7 @@
 //var $ = require("jquery");
 // import Interests from "./Interests";
 import { mapGetters, mapActions } from "vuex";
-const axios = require("axios");
+//const axios = require("axios");
 
 export default {
   name: "Profile",
@@ -241,19 +241,7 @@ export default {
         }
       } else this.valid = false;
     },
-    async uploadImage2(base64EncodedImage) {
-      try {
-        const data = await axios({
-          url: "/user/upload",
-          method: "post",
-          data: JSON.stringify({ data: base64EncodedImage }),
-          headers: { "Content-Type": "application/json" },
-        });
-        return data.data.secure_url;
-      } catch (err) {
-        console.error(err);
-      }
-    },
+
     passwordCheck() {
       this.valid3 = false;
       this.valid = true;
@@ -270,7 +258,7 @@ export default {
     setDialog() {
       this.setRegDialog(true);
     },
-    ...mapActions(["setRegDialog", "uploadImage", "changeProfile"]),
+    ...mapActions(["setRegDialog", "uploadImage2", "changeProfile"]),
     restart() {
       this.password = "";
       this.firstName = "";

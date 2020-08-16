@@ -87,6 +87,7 @@ export default {
       this.logoutLoad = true;
       await this.userLogout();
       this.userLogout = false;
+      window.location.reload();
     },
     ...mapActions(["userLogout"]),
     pushToShow() {
