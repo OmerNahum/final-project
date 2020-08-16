@@ -75,7 +75,7 @@ router.post("/upload", async (req, res) => {
     const uploadResponse = await cloudinary.uploader.upload(fileStr, {
       upload_preset: "y1g5txmx",
     });
-    console.log("uploadResponse", uploadResponse);
+    // console.log("uploadResponse", uploadResponse);
     res.send(uploadResponse);
   } catch (err) {
     console.error(err);

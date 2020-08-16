@@ -18,6 +18,7 @@
               <v-form>
                 <v-input disabled
                   ><v-avatar><img :src="user.image"/></v-avatar>
+                  <pre>&nbsp;</pre>
                   {{ this.firstName }}</v-input
                 >
                 <v-text-field
@@ -137,6 +138,7 @@
 //var $ = require("jquery");
 // import Interests from "./Interests";
 import { mapGetters, mapActions } from "vuex";
+const axios = require("axios");
 
 export default {
   name: "Profile",
@@ -206,20 +208,51 @@ export default {
           image: this.imageUrl ? this.imageUrl : this.user.image,
           interests: this.Interests ? this.Interests : this.user.interests,
         };
-        if (this.file) {
-          const formData = new FormData();
-          formData.append("file", this.file);
-          this.uploadImage(formData);
-        }
+        try {
+          if (this.file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(this.file);
+            reader.onloadend = async () => {
+              data.image = await this.uploadImage2(reader.result);
+              await this.changeProfile(data);
+              this.errorMessage = this.Valid;
 
-        await this.changeProfile(data);
-        this.errorMessage = this.Valid;
+              this.saveLoad = false;
+              if (!this.errorMessage) {
+                this.$router.push("/Show");
+              }
+            };
+            reader.onerror = () => {
+              console.error("AHHHHHHHH!!");
+            };
+            // this.uploadImage(formData);
+          } else {
+            await this.changeProfile(data);
+            this.errorMessage = this.Valid;
 
-        this.saveLoad = false;
-        if (!this.errorMessage) {
-          this.$router.push("/Show");
+            this.saveLoad = false;
+            if (!this.errorMessage) {
+              this.$router.push("/Show");
+            }
+          }
+        } catch (err) {
+          console.log(err);
+          this.createLoad = false;
         }
       } else this.valid = false;
+    },
+    async uploadImage2(base64EncodedImage) {
+      try {
+        const data = await axios({
+          url: "/user/upload",
+          method: "post",
+          data: JSON.stringify({ data: base64EncodedImage }),
+          headers: { "Content-Type": "application/json" },
+        });
+        return data.data.secure_url;
+      } catch (err) {
+        console.error(err);
+      }
     },
     passwordCheck() {
       this.valid3 = false;

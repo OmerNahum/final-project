@@ -144,7 +144,7 @@ export default {
           data: JSON.stringify({ data: base64EncodedImage }),
           headers: { "Content-Type": "application/json" },
         });
-        console.log(data);
+
         return data.data.secure_url;
       } catch (err) {
         console.error(err);
