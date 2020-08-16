@@ -122,6 +122,10 @@ export default {
               console.error("AHHHHHHHH!!");
             };
             // this.uploadImage(formData);
+          } else {
+            await this.createGroup(data);
+            this.socket.emit("onGroupDelete");
+            this.$router.push("Show");
           }
         } catch (err) {
           console.log(err);
@@ -157,7 +161,7 @@ export default {
     m() {
       console.log(this.date);
     },
-    ...mapActions(["createGroup", "updateContacts", "uploadImage"]),
+    ...mapActions(["createGroup", "updateContacts" /*, "uploadImage"*/]),
     onChangeChild(value) {
       this.closingTime = moment(value)
         .add(14, "hours")

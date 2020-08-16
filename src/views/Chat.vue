@@ -1,23 +1,25 @@
 /* eslint-disable vue/no-unused-vars */
 <template>
   <v-app id="app">
-    <v-content>
+    <v-main>
       <v-container fluid fill-height>
         <v-layout align-center justify-center class="blue lighten-4">
           <v-flex xs12 sm9 md7 class="d-flex justify-space-between">
             <v-card class="elevation-12" color="grey lighten-3" width="100%">
               <v-toolbar class="success lighten-1 " @click="dialog = true">
-                <a>
-                  <v-toolbar-title class="black--text">
-                    <div class="d-flex">
-                      <div>
-                        Chat-group: {{ group && group.name }}
-                        <v-icon>mdi-information-outline</v-icon>
-                      </div>
-                    </div>
-                  </v-toolbar-title>
-                </a>
                 <v-dialog v-model="dialog" persistent max-width="600px">
+                  <template v-slot:activator="{ on }">
+                    <a v-on="on">
+                      <v-toolbar-title class="black--text">
+                        <div class="d-flex">
+                          <div>
+                            Chat-group: {{ group && group.name }}
+                            <v-icon>mdi-information-outline</v-icon>
+                          </div>
+                        </div>
+                      </v-toolbar-title>
+                    </a>
+                  </template>
                   <v-card>
                     <v-card-title>
                       <span class="headline">Group</span>
@@ -42,7 +44,7 @@
                       :disabled="
                         !(group.admin.toString() === user._id.toString())
                       "
-                      :v-model="gpImage"
+                      v-model="gpImage"
                       :rules="groupImage"
                       @change="onChange"
                       accept="image/png, image/jpeg, image/bmp"
@@ -58,7 +60,7 @@
                       >Only admin can change these</v-card-text
                     >
                     <v-card-actions>
-                      <v-btn color="blue darken-1" text @click="dialog = false"
+                      <v-btn color="blue darken-1" text @click="onDialogClose"
                         >Close</v-btn
                       >
                       <v-btn
@@ -175,10 +177,7 @@
                         ></v-file-input>
                       </v-card-text>
                       <v-card-actions>
-                        <v-btn
-                          color="blue darken-1"
-                          text
-                          @click="regDialog = false"
+                        <v-btn color="blue darken-1" text @click="onDialogClose"
                           >Close</v-btn
                         >
                         <v-spacer></v-spacer>
@@ -186,6 +185,7 @@
                           color="success darken-1"
                           text
                           @click="onDialogSend"
+                          v-if="image"
                           >Send</v-btn
                         >
                       </v-card-actions>
@@ -230,7 +230,7 @@
           </v-flex>
         </v-layout>
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
@@ -287,11 +287,10 @@ export default {
 
       while (!this.group);
 
-      this.gpImage = this.group.image;
+      // this.gpImage = this.group.image;
       this.roomId = this.group._id;
       await this.createLogs(this.group._id);
       this.messages = this.Logs;
-      console.log(this.messages);
       await this.setChatPart(this.chatGroup.participants);
 
       this.participants = this.chatPart.map((user) => user.email);
@@ -374,8 +373,27 @@ export default {
       if (this.chatGroup.admin.toString() == this.user._id.toString()) {
         this.dialog = false;
         this.group.image = this.imageUrl ? this.imageUrl : this.group.image;
-        this.setGroupNameAndClosing(this.group);
-        this.socket.emit("onChange", { group: this.group });
+        try {
+          if (this.file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(this.file);
+            reader.onloadend = async () => {
+              this.group.image = await this.uploadImage2(reader.result);
+              this.setGroupNameAndClosing(this.group);
+              this.socket.emit("onChange", { group: this.group });
+            };
+            reader.onerror = () => {
+              console.error("AHHHHHHHH!!");
+            };
+            // this.uploadImage(formData);
+          } else {
+            this.setGroupNameAndClosing(this.group);
+            this.socket.emit("onChange", { group: this.group });
+          }
+        } catch (err) {
+          console.log(err);
+          this.createLoad = false;
+        }
       } else {
         this.dialog = true;
         this.valid = false;
@@ -413,6 +431,14 @@ export default {
         }
       }
     },
+    onDialogClose() {
+      this.regDialog = false;
+      this.dialog = false;
+      this.image = null;
+      this.file = null;
+      this.imageUrl = null;
+      this.gpImage = null;
+    },
     async uploadImage2(base64EncodedImage) {
       try {
         const data = await axios({
@@ -421,7 +447,7 @@ export default {
           data: JSON.stringify({ data: base64EncodedImage }),
           headers: { "Content-Type": "application/json" },
         });
-        console.log(data);
+
         return data.data.secure_url;
       } catch (err) {
         console.error(err);
