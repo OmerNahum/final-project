@@ -178,7 +178,11 @@ io.on("connection", (socket) => {
           message.endsWith(".jpeg") ||
           message.endsWith(".bmp") ||
           message.endsWith(".jpg")
-            ? room.messages[room.messages.length - 2]
+            ? [
+                room.messages[room.messages.length - 3],
+                room.messages[room.messages.length - 2],
+                room.messages[room.messages.length - 1],
+              ]
             : room.messages[room.messages.length - 1],
       });
       callback();

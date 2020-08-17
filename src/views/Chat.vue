@@ -311,12 +311,23 @@ export default {
           () => {}
         );
 
-        const message =
-          messages.messages.user != " "
-            ? messages.messages.user + ": " + messages.messages.message
-            : messages.messages.message;
-
-        this.messages.push(message);
+        if (messages.messages.length > 1) {
+          for (let i = 0; i < messages.messages.length; i++) {
+            const message =
+              messages.messages[i].user != " "
+                ? messages.messages[i].user +
+                  ": " +
+                  messages.messages[i].message
+                : messages.messages[i].message;
+            this.messages.push(message);
+          }
+        } else {
+          const message =
+            messages.messages.user != " "
+              ? messages.messages.user + ": " + messages.messages.message
+              : messages.messages.message;
+          this.messages.push(message);
+        }
 
         setTimeout(() => {
           this.scrollToEnd();
@@ -341,6 +352,8 @@ export default {
             this.sendLoad = false;
           }
         );
+      } else {
+        this.sendLoad = false;
       }
     },
     onChangeChild(value) {
@@ -410,7 +423,7 @@ export default {
             reader.readAsDataURL(this.file);
             reader.onloadend = async () => {
               img = await this.uploadImage2(reader.result);
-              console.log(img);
+
               this.socket.emit(
                 "sendMessage",
                 { user: this.user, roomId: this.group._id, message: img },

@@ -1,9 +1,9 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Add from "../views/Add.vue";
-import Delete from "../views/Delete.vue";
+
 import Show from "../views/Show.vue";
-import Edit from "../views/Edit.vue";
+
 import Landing from "../views/Landing.vue";
 import Register from "../views/Register.vue";
 import Contacts from "../views/Contacts.vue";
@@ -21,19 +21,9 @@ const routes = [
     component: Add,
   },
   {
-    path: "/Delete",
-    name: "Delete",
-    component: Delete,
-  },
-  {
     path: "/Show",
     name: "Show",
     component: Show,
-  },
-  {
-    path: "/Edit",
-    name: "Edit",
-    component: Edit,
   },
   {
     path: "/",

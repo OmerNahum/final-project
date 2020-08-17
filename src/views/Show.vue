@@ -93,7 +93,6 @@
 import { mapGetters } from "vuex";
 import { mapActions } from "vuex";
 import io from "socket.io-client";
-import moment from "moment";
 
 export default {
   async created() {
@@ -139,7 +138,6 @@ export default {
     deleteLoader: false,
     foreverLoader: false,
     socket: null,
-    moment: moment,
   }),
 
   methods: {
@@ -221,17 +219,10 @@ export default {
       "getGroup",
       "setLastSeen",
       "setGroupsPosition",
+      "createRandomUsers",
     ]),
   },
   async beforeDestroy() {
-    // await this.socket.emit("lastSeen", {
-    //   time: this.moment(Date.now()).format("MMMM Do YYYY, h:mm:ss"),
-    //   u: this.user,
-    // });
-    // this.socket.on("updateFinished", () => {
-    //   this.socket.close();
-    // });
-
     setTimeout(() => {
       this.setLastSeen();
     }, 500);
