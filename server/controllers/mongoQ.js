@@ -105,7 +105,7 @@ exports.createGroup = async (req, res) => {
 
 exports.logout = (req, res) => {
   req.logout();
-  res.redirect("http://localhost:8080/");
+  res.redirect("https://tranquil-lowlands-83761.herokuapp.com/");
 };
 
 exports.getAllGroups = async (req, res) => {
