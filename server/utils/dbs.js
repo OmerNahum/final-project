@@ -28,7 +28,7 @@ const funcG = (contact, lastGroups) => {
   for (let i = 0; i < lastGroups.length; i++) {
     if (lastGroups[i].participants.includes(contact)) times++;
   }
-  console.log(times);
+
   return times / lastGroups.length;
 };
 

@@ -199,28 +199,6 @@ exports.adminDeleteGroup = async (req, res) => {
 };
 
 exports.recommendedContacts = async (req, res) => {
-  // const func = (interests1, interests2) => {
-  //   let dis = 0;
-  //   for (let i = 0; i < interests1.length; i++) {
-  //     if (interests1[i] != interests2[i]) {
-  //       dis++;
-  //     }
-  //   }
-  //   return dis;
-  // };
-  // const euclideanDist = (u1, u2) => {
-  //   const p = u1.interests;
-  //   const q = u2.interests;
-
-  //   var sum = 0;
-  //   var i = Math.min(p.length, q.length);
-
-  //   while (i--) {
-  //     sum += (p[i] - q[i]) * (p[i] - q[i]);
-  //   }
-
-  //   return Math.sqrt(sum);
-  // };
   let allUsers = await Users.find();
   allUsers = allUsers.filter(
     (user) => !req.user.contacts.includes(user._id.toString())
@@ -229,25 +207,33 @@ exports.recommendedContacts = async (req, res) => {
     (user) => user._id.toString() == req.user._id.toString()
   );
   const dbscan = new clustering.DBSCAN();
-  const clusters = dbscan.run(allUsers, 5, 2, functions.euclideanDist);
+  const clusters = dbscan.run(allUsers, 2, 4, functions.euclideanDist);
 
   let matchCluster = clusters.find((cluster) => cluster.includes(userIndex));
   if (matchCluster) {
     matchCluster = matchCluster.filter((index) => index !== userIndex);
+  } else {
+    let i = 3;
+    while (!matchCluster) {
+      const clusters = dbscan.run(allUsers, i, 4, functions.euclideanDist);
 
-    const clusterUsers = matchCluster.map((i) => allUsers[i]);
+      matchCluster = clusters.find((cluster) => cluster.includes(userIndex));
+      i++;
+    }
+  }
 
-    clusterUsers.sort((user1, user2) => {
-      return functions.func(user1.interests, req.user.interests) >=
-        functions.func(user2.interests, req.user.interests)
-        ? 1
-        : -1;
-    });
+  const clusterUsers = matchCluster.map((i) => allUsers[i]);
 
-    return res
-      .status(200)
-      .send(clusterUsers.slice(Math.max(clusterUsers.length - 10, 0)));
-  } else return res.status(200).send([]);
+  clusterUsers.sort((user1, user2) => {
+    return functions.func(user1.interests, req.user.interests) >=
+      functions.func(user2.interests, req.user.interests)
+      ? 1
+      : -1;
+  });
+
+  return res
+    .status(200)
+    .send(clusterUsers.slice(Math.max(clusterUsers.length - 10, 0)));
 };
 
 exports.recommendedGroups = async (req, res) => {
@@ -256,53 +242,66 @@ exports.recommendedGroups = async (req, res) => {
     Math.max(req.user.groups.length - 30, 0)
   );
   users.push(req.user);
-  const lastGroups = await Group.find({ _id: { $in: groupsId } });
+  let lastGroups = [];
+  if (groupsId.length > 0) {
+    lastGroups = await Group.find({ _id: { $in: groupsId } });
+  }
 
   const userIndex = users.length - 1;
 
   const dbscan = new clustering.DBSCAN();
-  const clusters = dbscan.run(users, 7, 2, functions.euclideanDist);
-  let matchCluster = clusters.find((cluster) => cluster.includes(userIndex));
+  try {
+    const clusters = dbscan.run(users, 3, 2, functions.euclideanDist);
 
-  let clusterUsers = matchCluster.map((i) => users[i]);
-
-  // const funcG = (contact) => {
-  //   let times = 0;
-  //   for (let i = 0; i < lastGroups.length; i++) {
-  //     if (lastGroups[i].participants.includes(contact)) times++;
-  //   }
-  //
-  //   return times / lastGroups.length;
-  // };
-  // const func = (interests1, interests2) => {
-  //   let dis = 0;
-  //   for (let i = 0; i < interests1.length; i++) {
-  //     if (interests1[i] != interests2[i]) {
-  //       dis++;
-  //     }
-  //   }
-
-  //   return dis / interests1.length;
-  // };
-  const divide1 = lastGroups.length > 0 ? (35 - lastGroups.length) / 100 : 1;
-  const divide2 = 1 - divide1;
-  clusterUsers = clusterUsers.filter(
-    (user) => user._id.toString() != req.user._id.toString()
-  );
-  if (clusterUsers) {
-    clusterUsers.sort((user1, user2) =>
-      functions.funcG(user1._id.toString(), lastGroups) * divide2 -
-        functions.func(req.user.interests, user1.interests) * divide1 <=
-      functions.funcG(user2._id.toString(), lastGroups) * divide2 -
-        functions.func(req.user.interests, user2.interests) * divide1
-        ? 1
-        : -1
+    let matchCluster = await clusters.find((cluster) =>
+      cluster.includes(userIndex)
     );
-  }
 
-  return res
-    .status(200)
-    .send(clusterUsers.slice(Math.max(users.length - 10, 0)));
+    if (!matchCluster) {
+      let fillers = [];
+      for (let i = 0; i < 6; i++) {
+        fillers.push(users[Math.floor(Math.random() * users.length)]);
+      }
+      const divide1 =
+        lastGroups.length > 0 ? (35 - lastGroups.length) / 100 : 1;
+      const divide2 = 1 - divide1;
+      matchCluster = fillers;
+      fillers.sort((user1, user2) =>
+        functions.funcG(user1._id.toString(), lastGroups) * divide2 -
+          functions.func(req.user.interests, user1.interests) * divide1 >=
+        functions.funcG(user2._id.toString(), lastGroups) * divide2 -
+          functions.func(req.user.interests, user2.interests) * divide1
+          ? 1
+          : -1
+      );
+      return res.status(200).send(fillers);
+    }
+
+    let clusterUsers = matchCluster.map((i) => users[i]);
+
+    const divide1 = lastGroups.length > 0 ? (35 - lastGroups.length) / 100 : 1;
+    const divide2 = 1 - divide1;
+    clusterUsers = clusterUsers.filter(
+      (user) => user._id.toString() != req.user._id.toString()
+    );
+
+    if (clusterUsers) {
+      clusterUsers.sort((user1, user2) =>
+        functions.funcG(user1._id.toString(), lastGroups) * divide2 -
+          functions.func(req.user.interests, user1.interests) * divide1 >=
+        functions.funcG(user2._id.toString(), lastGroups) * divide2 -
+          functions.func(req.user.interests, user2.interests) * divide1
+          ? 1
+          : -1
+      );
+    }
+
+    return res
+      .status(200)
+      .send(clusterUsers.slice(Math.max(clusterUsers.length - 10, 0)));
+  } catch (error) {
+    return res.status(404).send("cant find recommended");
+  }
 };
 
 exports.getAllUsers = async (req, res) => {

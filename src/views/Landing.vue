@@ -87,6 +87,7 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "Login",
+  created() {},
   components: {},
   computed: {
     ...mapGetters(["User"]),
@@ -166,7 +167,12 @@ export default {
         }
       }, 500);
     },
-    ...mapActions(["setUser", "setUserBygoogle", "currentUser"]),
+    ...mapActions([
+      "setUser",
+      "setUserBygoogle",
+      "currentUser",
+      "createRandomUsers",
+    ]),
   },
 };
 </script>

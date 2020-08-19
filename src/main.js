@@ -249,8 +249,12 @@ export const store = new Vuex.Store({
     },
     async setRecommendedGroups(context) {
       const recommended = await axios.get("/user/recommendedGroups");
-
-      context.commit("setRecommended", recommended.data);
+      if (recommended.data.length > 0) {
+        console.log(recommended.data);
+        context.commit("setRecommended", recommended.data);
+      } else {
+        context.commit("setRecommended", []);
+      }
     },
     // async uploadImage(context, formData) {
     //   try {
@@ -275,6 +279,7 @@ export const store = new Vuex.Store({
         console.error(err);
       }
     },
+
     async changeProfile(context, profileData) {
       // eslint-disable-next-line no-unused-vars
 

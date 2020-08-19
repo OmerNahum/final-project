@@ -301,15 +301,20 @@ export default {
         this.isLoading1 = false;
         this.dialog = true;
       } else {
-        if (this.recommended.length > 0) {
+        if (this.users.length > 0) {
           this.isLoading = true;
-          await this.setRecommendedGroups();
-
-          this.recommended = this.Recommended;
-          while (!this.recommended);
-          this.isLoading = false;
-          this.dialog = true;
+          try {
+            await this.setRecommendedGroups();
+            this.recommended = this.Recommended;
+            while (!this.recommended);
+            this.isLoading = false;
+            this.dialog = true;
+          } catch (error) {
+            console.log("cant find recommended");
+            this.isLoading = false;
+          }
         } else {
+          this.recommended = [];
           this.dialog = true;
         }
       }
@@ -347,6 +352,7 @@ export default {
       }, 500);
     },
     setChooser(number) {
+      console.log(number);
       this.chooser = number;
       this.getRecommended();
     },
