@@ -259,7 +259,8 @@ exports.recommendedGroups = async (req, res) => {
 
     if (!matchCluster) {
       let fillers = [];
-      for (let i = 0; i < 6; i++) {
+      const range = Math.min(users.length, 6);
+      for (let i = 0; i < range; i++) {
         fillers.push(users[Math.floor(Math.random() * users.length)]);
       }
       const divide1 =
