@@ -51,7 +51,8 @@ passport.use(
         lastName: profile.name.familyName,
         contacts: contacts1,
         email: profile.emails[0].value,
-        image: profile.photos[0].value,
+        image:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQqxFDpAr9FpHYSNvxKAGp65w5QQ6nKkBPFUuzJGGuduwtL3F86&usqp=CAU",
       }).save();
       done(null, newUser);
     }

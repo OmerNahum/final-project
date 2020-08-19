@@ -71,12 +71,9 @@
           color="red"
           :loading="foreverLoader"
           @click="checkAdmin(item._id)"
+          v-if="item.admin.toString() === user._id.toString()"
         >
-          <v-icon
-            title="Delete group for all participants"
-            small
-            v-if="item.admin.toString() === user._id.toString()"
-          >
+          <v-icon title="Delete group for all participants" small>
             mdi-delete-forever
           </v-icon>
         </v-btn>

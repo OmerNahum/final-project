@@ -61,7 +61,7 @@ export default {
         text: "Profile",
         route: "/Profile",
       },
-      { icon: "mdi-account-group", text: "Grpups", route: "/Show" },
+      { icon: "mdi-account-group", text: "Groups", route: "/Show" },
       { icon: "mdi-account-plus", text: "Create Group", route: "/Contacts" },
       // { icon: "mdi-account-remove", text: "Delete-Group", route: "/Delete" },
       {

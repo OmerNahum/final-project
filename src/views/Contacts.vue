@@ -218,7 +218,7 @@ export default {
     },
     searchUsers() {
       this.searchedUsers = this.users.filter((u) =>
-        u.name.startsWith(this.name)
+        u.firstName.startsWith(this.name)
       );
     },
     create() {
@@ -230,36 +230,54 @@ export default {
       this.addContactLoad = true;
       this.valid = true;
       this.existValid = false;
+      if (this.contactEmail != "") {
+        if (this.contactEmail !== this.user.email) {
+          try {
+            await this.addContact(this.contactEmail);
 
-      try {
-        await this.addContact(this.contactEmail);
+            const message = this.Valid;
 
-        const message = this.Valid;
-
-        if (this.Valid == "") {
-          this.dialog1 = false;
-          this.dialog = false;
-          this.load();
-          this.addContactLoad = false;
-        } else if (message == "Unregistered user") {
-          this.addContactLoad = false;
-          this.valid = false;
-        } else if (message == "already exist") {
-          this.addContactLoad = false;
+            if (this.Valid == "") {
+              this.dialog1 = false;
+              this.dialog = false;
+              this.load();
+              this.addContactLoad = false;
+            } else if (message == "Unregistered user") {
+              this.addContactLoad = false;
+              this.valid = false;
+            } else if (message == "already exist") {
+              this.addContactLoad = false;
+              this.existValid = true;
+            }
+          } catch (error) {
+            console.log("vue add contact error");
+            this.addContactLoad = false;
+          }
+        } else {
           this.existValid = true;
+          this.addContactLoad = false;
         }
-      } catch (error) {
-        console.log("vue add contact error");
+      } else {
+        this.valid = false;
+        this.addContactLoad = false;
       }
     },
     async onSaveRec() {
       this.dialog = false;
       if (this.chooser == 2) {
-        this.selected = this.recSelection;
-        this.create();
+        if (this.recSelection.length > 0) {
+          this.selected = this.recSelection;
+          this.create();
+        } else {
+          this.dialog = false;
+        }
       } else if (this.chooser == 1) {
-        await this.addContact(this.recSelection);
-        this.load();
+        if (this.recSelection.length > 0) {
+          await this.addContact(this.recSelection);
+          this.load();
+        } else {
+          this.dialog1 = false;
+        }
       }
     },
     async deleteCon(id) {
@@ -283,13 +301,17 @@ export default {
         this.isLoading1 = false;
         this.dialog = true;
       } else {
-        this.isLoading = true;
-        await this.setRecommendedGroups();
+        if (this.recommended.length > 0) {
+          this.isLoading = true;
+          await this.setRecommendedGroups();
 
-        this.recommended = this.Recommended;
-        while (!this.recommended);
-        this.isLoading = false;
-        this.dialog = true;
+          this.recommended = this.Recommended;
+          while (!this.recommended);
+          this.isLoading = false;
+          this.dialog = true;
+        } else {
+          this.dialog = true;
+        }
       }
     },
     btnSize() {

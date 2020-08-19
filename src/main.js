@@ -126,7 +126,7 @@ export const store = new Vuex.Store({
       }
     },
     async setUserBygoogle(context) {
-      const user = await axios.get("user/google");
+      const user = await axios.get("/user/google");
       context.commit("setUser", user);
     },
     async createGroup(context, groupData) {

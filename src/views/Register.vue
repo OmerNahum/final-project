@@ -228,6 +228,7 @@ export default {
                 })
                 .catch((err) => {
                   console.log(err);
+                  this.valid2 = true;
                   this.registerBtnLoad = false;
                 });
             };
@@ -259,20 +260,7 @@ export default {
         this.registerBtnLoad = false;
       }
     },
-    // async uploadImage2(base64EncodedImage) {
-    //   try {
-    //     const data = await axios({
-    //       url: "/user/upload",
-    //       method: "post",
-    //       data: JSON.stringify({ data: base64EncodedImage }),
-    //       headers: { "Content-Type": "application/json" },
-    //     });
 
-    //     return data.data.secure_url;
-    //   } catch (err) {
-    //     console.error(err);
-    //   }
-    // },
     btnSize() {
       setTimeout(() => {
         this.cardWidth = window.outerWidth * 0.3;

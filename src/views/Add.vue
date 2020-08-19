@@ -10,6 +10,7 @@
           <v-text-field v-model="GroupName" label="Group Name *" />
           <v-text-field
             readonly
+            disabled
             v-model="this.participants"
             label="Participants"
           ></v-text-field>
