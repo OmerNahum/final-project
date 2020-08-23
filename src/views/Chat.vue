@@ -137,7 +137,7 @@
                   spellcheck
                   @keydown.enter="sendMessage"
                 ></v-textarea>
-                <form>
+                <form class="ml-3">
                   <v-btn
                     :loading="sendLoad"
                     @click="sendMessage"
@@ -279,6 +279,8 @@ export default {
     gpImage: null,
     sendLoad: false,
     deletePartLoad: false,
+    row: false,
+    mdiImage: null,
   }),
   methods: {
     async connectGroup() {
@@ -342,6 +344,8 @@ export default {
     async sendMessage(event) {
       this.sendLoad = true;
       event.preventDefault();
+
+      this.message = this.message.trim();
 
       if (this.message != "") {
         this.socket.emit(
@@ -454,6 +458,7 @@ export default {
       this.imageUrl = e.name;
       this.file = e;
     },
+
     // ...mapActions(["uploadImage"]),
   },
   beforeDestroy() {

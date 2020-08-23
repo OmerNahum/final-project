@@ -142,7 +142,7 @@ io.on("connection", (socket) => {
         room.messages.push({ user: " ", message: "\n \n \n \n" });
       }
       room.messages.push({
-        user: user.firstName,
+        user: user.email.substr(0, user.email.indexOf("@")),
         message: message.trim(),
         sendTime: moment().format("MMMM Do YYYY, h:mm:ss"),
       });

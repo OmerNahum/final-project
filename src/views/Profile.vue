@@ -96,6 +96,9 @@
                 <v-card-text v-if="valid3" class="error--text"
                   >Password must have 4 or more characters
                 </v-card-text>
+                <v-card-text v-if="emailExist" class="error--text"
+                  >this email already in use
+                </v-card-text>
               </v-form>
             </v-card-text>
             <v-card-actions>
@@ -147,7 +150,7 @@ export default {
     this.setUser();
   },
   computed: {
-    ...mapGetters(["Interests", "RegDialog", "User"]),
+    ...mapGetters(["Interests", "RegDialog", "User", "Valid"]),
   },
   data: () => ({
     groupImage: [
@@ -184,6 +187,7 @@ export default {
     lg: false,
     xl: false,
     md: true,
+    emailExist: false,
   }),
   methods: {
     setUser() {
@@ -218,8 +222,12 @@ export default {
               this.errorMessage = this.Valid;
 
               this.saveLoad = false;
-              if (!this.errorMessage) {
+
+              if (!(this.errorMessage == "email already in use")) {
                 this.$router.push("/Show");
+              } else {
+                this.saveLoad = false;
+                this.emailExist = true;
               }
             };
             reader.onerror = () => {
@@ -229,10 +237,14 @@ export default {
           } else {
             await this.changeProfile(data);
             this.errorMessage = this.Valid;
-
+            // while (!this.errorMessage);
             this.saveLoad = false;
-            if (!this.errorMessage) {
+            console.log(this.errorMessage);
+            if (!(this.errorMessage == "email already in use")) {
               this.$router.push("/Show");
+            } else {
+              this.saveLoad = false;
+              this.emailExist = true;
             }
           }
         } catch (err) {

@@ -473,6 +473,10 @@ exports.setGroupNameAndClosing = async (req, res) => {
 };
 
 exports.changeProfile = async (req, res) => {
+  const isValid = await Users.findOne({ email: req.body.email });
+  if (isValid) {
+    return res.status(500).send({ message: "email already in use" });
+  }
   let hashedPassword = req.body.password;
   if (hashedPassword !== req.user.password) {
     hashedPassword = await bcrypt.hash(req.body.password, 10);

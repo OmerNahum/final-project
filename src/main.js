@@ -282,13 +282,14 @@ export const store = new Vuex.Store({
 
     async changeProfile(context, profileData) {
       // eslint-disable-next-line no-unused-vars
-
+      context.commit("setErrorMessage", "");
       try {
         const user = await axios.post("/user/changeProfile", profileData);
 
         context.commit("setUser", user);
       } catch (error) {
-        context.commit("setErrorMessage", error);
+        console.log(error.response.data.message);
+        context.commit("setErrorMessage", error.response.data.message);
       }
     },
     async setLastSeen(context) {
