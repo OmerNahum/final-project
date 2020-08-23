@@ -75,6 +75,7 @@
         <v-dialog v-model="dialog" persistent max-width="600px">
           <template v-slot:activator="{}">
             <v-btn
+              title="Recommended contacts for new group"
               :loading="isLoading"
               :x-small="xs"
               :small="s"
@@ -84,7 +85,7 @@
               color="purple"
               dark
               @click="setChooser(2)"
-              >Recommended Groups</v-btn
+              >Recommended cfg</v-btn
             >
             <v-btn
               :loading="isLoading1"
@@ -97,7 +98,7 @@
               :class="recommendedConMg"
               dark
               @click="setChooser(1)"
-              >Recommended contact</v-btn
+              >Recommended users</v-btn
             >
           </template>
           <v-data-table
