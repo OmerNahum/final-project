@@ -131,6 +131,7 @@
               </v-card-text>
               <v-form @submit.prevent="submit" class="d-flex">
                 <v-textarea
+                  class="ml-3"
                   background-color="white"
                   color="black"
                   auto-grow
@@ -154,7 +155,7 @@
                   <v-dialog v-model="regDialog" persistent max-width="600px">
                     <template v-slot:activator="{ on }">
                       <v-btn
-                        class="ml-1"
+                        class="ml-1 mr-3"
                         :loading="imageLoad"
                         color="red lighten-3"
                         x-small

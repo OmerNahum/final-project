@@ -34,6 +34,11 @@
                   placeholder="email@email.com"
                   required
                 />
+                <v-text-field
+                  v-model="interests"
+                  label="Interests"
+                  disabled
+                ></v-text-field>
                 <v-file-input
                   v-model="image"
                   :rules="groupImage"
@@ -188,6 +193,19 @@ export default {
     xl: false,
     md: true,
     emailExist: false,
+    interests: [],
+    names: [
+      "sport",
+      "studty",
+      "clubs",
+      "nature",
+      "pubs",
+      "gaming",
+      "food",
+      "movies",
+      "shopping",
+      "music",
+    ],
   }),
   methods: {
     setUser() {
@@ -196,6 +214,10 @@ export default {
       this.firstName = this.user.firstName;
       this.lastName = this.user.lastName;
       this.email = this.user.email;
+      for (let i = 0; i < this.user.interests.length; i++) {
+        this.user.interests[i] == 1 ? this.interests.push(this.names[i]) : null;
+      }
+      this.interests = this.interests.join(", ");
     },
     async setNewProfile() {
       this.emailExist = false;
