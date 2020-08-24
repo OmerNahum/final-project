@@ -40,18 +40,20 @@
                         disabled
                       ></v-text-field>
                     </v-card-text>
-                    <v-file-input
-                      :disabled="
-                        !(group.admin.toString() === user._id.toString())
-                      "
-                      v-model="gpImage"
-                      :rules="groupImage"
-                      @change="onChange"
-                      accept="image/png, image/jpeg, image/bmp"
-                      placeholder="Pick group picture"
-                      prepend-icon="mdi-folder"
-                      label="Change group picture"
-                    ></v-file-input>
+                    <form style="width:96%;">
+                      <v-file-input
+                        :disabled="
+                          !(group.admin.toString() === user._id.toString())
+                        "
+                        v-model="gpImage"
+                        :rules="groupImage"
+                        @change="onChange"
+                        accept="image/png, image/jpeg, image/bmp"
+                        placeholder="Pick group picture"
+                        prepend-icon="mdi-folder"
+                        label="Change group picture"
+                      ></v-file-input>
+                    </form>
 
                     <span v-if="group.admin.toString() === user._id.toString()">
                       <DatePicker @clicked="onChangeChild" />
