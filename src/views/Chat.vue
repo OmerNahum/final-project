@@ -59,6 +59,10 @@
                     <v-card-text v-if="!valid" class="error--text"
                       >Only admin can change these</v-card-text
                     >
+                    <v-card-text v-if="!timeValid" class="error--text"
+                      >Invalid closing time, closing time will remain the
+                      same.</v-card-text
+                    >
                     <v-card-actions>
                       <v-btn color="blue darken-1" text @click="onDialogClose"
                         >Close</v-btn
@@ -281,6 +285,7 @@ export default {
     deletePartLoad: false,
     row: false,
     mdiImage: null,
+    timeValid: true,
   }),
   methods: {
     async connectGroup() {
@@ -361,9 +366,15 @@ export default {
       }
     },
     onChangeChild(value) {
-      this.group.closingTime = moment(value)
+      this.timeValid = true;
+      this.closingTime = moment(value)
         .add(14, "hours")
-        .format("LLLL");
+        .format("MMMM Do YYYY, h:mm:ss");
+
+      if (moment(value) < moment()) {
+        this.timeValid = false;
+        this.closingTime = this.group.closingTime;
+      }
     },
     ...mapActions([
       "createLogs",

@@ -225,7 +225,7 @@ exports.recommendedContacts = async (req, res) => {
   const clusterUsers = matchCluster.map((i) => allUsers[i]);
 
   clusterUsers.sort((user1, user2) => {
-    return functions.func(user1.interests, req.user.interests) >=
+    return functions.func(user1.interests, req.user.interests) <=
       functions.func(user2.interests, req.user.interests)
       ? 1
       : -1;
@@ -259,9 +259,15 @@ exports.recommendedGroups = async (req, res) => {
 
     if (!matchCluster) {
       let fillers = [];
+      users = users.filter(
+        (user) => user._id.toString() !== req.user._id.toString()
+      );
       const range = Math.min(users.length, 6);
       for (let i = 0; i < range; i++) {
-        fillers.push(users[Math.floor(Math.random() * users.length)]);
+        const user = users[Math.floor(Math.random() * users.length)];
+        if (!fillers.includes(user)) {
+          fillers.push(user);
+        }
       }
       const divide1 =
         lastGroups.length > 0 ? (35 - lastGroups.length) / 100 : 1;

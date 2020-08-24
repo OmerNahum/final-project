@@ -353,7 +353,6 @@ export default {
       }, 500);
     },
     setChooser(number) {
-      console.log(number);
       this.chooser = number;
       this.getRecommended();
     },

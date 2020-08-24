@@ -250,21 +250,12 @@ export const store = new Vuex.Store({
     async setRecommendedGroups(context) {
       const recommended = await axios.get("/user/recommendedGroups");
       if (recommended.data.length > 0) {
-        console.log(recommended.data);
         context.commit("setRecommended", recommended.data);
       } else {
         context.commit("setRecommended", []);
       }
     },
-    // async uploadImage(context, formData) {
-    //   try {
-    //     const url = await axios.post("/user/upload", formData);
-    //     console.log(url)
 
-    //   } catch (error) {
-    //     context.commit("setErrorMessage", error);
-    //   }
-    // },
     async uploadImage2(context, base64EncodedImage) {
       try {
         const data = await axios({
@@ -288,7 +279,6 @@ export const store = new Vuex.Store({
 
         context.commit("setUser", user);
       } catch (error) {
-        console.log(error.response.data.message);
         context.commit("setErrorMessage", error.response.data.message);
       }
     },

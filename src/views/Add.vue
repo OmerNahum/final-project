@@ -38,6 +38,10 @@
           <v-card-text v-if="!valid" class="error--text"
             >Group name must be given</v-card-text
           >
+          <v-card-text v-if="!timeValid" class="error--text"
+            >Invalid closing time, closing time will set to 24 hours from
+            now.</v-card-text
+          >
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -89,6 +93,7 @@ export default {
     headers: [{ text: "participants", value: "email" }],
     file: null,
     createLoad: false,
+    timeValid: true,
   }),
   methods: {
     async addGroup() {
@@ -115,7 +120,7 @@ export default {
             reader.readAsDataURL(this.file);
             reader.onloadend = async () => {
               data.image = await this.uploadImage2(reader.result);
-              console.log(data.image);
+
               await this.createGroup(data);
               this.socket.emit("onGroupDelete");
               this.$router.push("Show");
@@ -146,14 +151,19 @@ export default {
     goto() {
       location.replace("/contacts");
     },
-    m() {
-      console.log(this.date);
-    },
     ...mapActions(["createGroup", "updateContacts", "uploadImage2"]),
     onChangeChild(value) {
+      this.timeValid = true;
       this.closingTime = moment(value)
         .add(14, "hours")
-        .format("LLLL");
+        .format("MMMM Do YYYY, h:mm:ss");
+
+      if (moment(value) < moment()) {
+        this.timeValid = false;
+        this.closingTime = moment()
+          .add(1, "days")
+          .format("MMMM Do YYYY, h:mm:ss");
+      }
     },
     setParticipants() {
       const emails = this.Participants.map((p) => " " + p.email);
