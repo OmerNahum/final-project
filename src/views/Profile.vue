@@ -198,6 +198,7 @@ export default {
       this.email = this.user.email;
     },
     async setNewProfile() {
+      this.emailExist = false;
       this.valid2 = false;
       if (
         this.firstName != "" &&
@@ -237,7 +238,7 @@ export default {
           } else {
             await this.changeProfile(data);
             this.errorMessage = this.Valid;
-            // while (!this.errorMessage);
+
             this.saveLoad = false;
             console.log(this.errorMessage);
             if (!(this.errorMessage == "email already in use")) {

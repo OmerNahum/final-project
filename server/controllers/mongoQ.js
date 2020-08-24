@@ -480,7 +480,7 @@ exports.setGroupNameAndClosing = async (req, res) => {
 
 exports.changeProfile = async (req, res) => {
   const isValid = await Users.findOne({ email: req.body.email });
-  if (isValid) {
+  if (isValid && isValid._id.toString() !== req.user._id.toString()) {
     return res.status(500).send({ message: "email already in use" });
   }
   let hashedPassword = req.body.password;
