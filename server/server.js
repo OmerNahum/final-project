@@ -121,18 +121,6 @@ io.on("connection", (socket) => {
     const room = await Groups.findById(roomId);
 
     if (room) {
-      //"image/png, image/jpeg, image/bmp"
-      // if (
-      //   message.endsWith(".png") ||
-      //   message.endsWith(".jpeg") ||
-      //   message.endsWith(".bmp")
-      // ) {
-      //   room.messages.push({
-      //     user: user.firstName,
-      //     message: message,
-      //   });
-      //   await room.save();
-      // } else {
       if (
         message.endsWith(".png") ||
         message.endsWith(".jpeg") ||

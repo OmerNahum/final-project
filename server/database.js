@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-const dbPath =
-  "mongodb+srv://OmerNahum:9202218@cluster0-unf6m.mongodb.net/test?retryWrites=true&w=majority";
+const dbPath = "";
 mongoose.connect(dbPath, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
